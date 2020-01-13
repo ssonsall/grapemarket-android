@@ -14,7 +14,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".MyLocationAuthActivity"></activity>
+        <activity android:name=".MyLocationSetting" />
+        <activity android:name=".MyInfoActivity" />
+        <activity android:name=".MySettingActivity" />
+        <activity android:name=".CommentActivity" />
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".WriteActivity" />
+        <activity android:name=".DetailActivity" />
         <activity android:name=".permission.PermissionsActivity" />
         <activity android:name=".JoinActivity" />
         <activity android:name=".ListActivity" />

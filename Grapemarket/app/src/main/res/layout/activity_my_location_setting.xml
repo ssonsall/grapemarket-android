@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MyLocationSetting">
+
+    <TextView
+        android:id="@+id/myLocationSetAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/myLocationSetLatitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/myLocationSetLongitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:text="TextView" />
+
+    <Button
+        android:id="@+id/btnAddressSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="btnAddressSettingClicked"
+        android:text="동네설정" />
+
+    <Button
+        android:id="@+id/btnAddressSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="btnAddressSaveClicked"
+        android:text="저장" />
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="473dp"
+        android:layout_height="596dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"></WebView>
+
+</LinearLayout>

@@ -32,14 +32,14 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/username"
+            android:id="@+id/main_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
+            android:hint="아이디를 입력하세요."
+            android:inputType="textPersonName" />
 
     </LinearLayout>
 
@@ -58,20 +58,20 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/main_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
+            android:hint="비밀번호를 입력하세요."
+            android:inputType="textPersonName" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
@@ -96,4 +96,13 @@
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnTestLogin"
+        android:onClick="btnTestLoginClicked"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:text="테스트로그인"
+        android:textColor="#FFFFFF" />
 </LinearLayout>

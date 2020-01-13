@@ -13,6 +13,7 @@ import com.bitc502.grapemarket.DetailActivity;
 
 import com.bitc502.grapemarket.R;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,7 @@ import lombok.Setter;
 //현재 화면에 보여지는 아이템만 메모리에 띄움
 @Setter
 @Getter
+@EqualsAndHashCode(callSuper=false)
 public class BoardDataListHolder extends RecyclerView.ViewHolder {
     private ImageView image;
     private TextView title;
@@ -34,7 +36,7 @@ public class BoardDataListHolder extends RecyclerView.ViewHolder {
         image = itemView.findViewById(R.id.list_image);
         title = itemView.findViewById(R.id.title);
         location = itemView.findViewById(R.id.location);
-        username = itemView.findViewById(R.id.username);
+        username = itemView.findViewById(R.id.list_username);
         price = itemView.findViewById(R.id.price);
         itemView.setOnClickListener(new View.OnClickListener(){
             @Override

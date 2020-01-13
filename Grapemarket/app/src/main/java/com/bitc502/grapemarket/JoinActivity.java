@@ -51,8 +51,8 @@ public class JoinActivity extends AppCompatActivity {
         checker = new PermissionsChecker(this);
         showSelectedImageView = findViewById(R.id.imageSelected);
 
-        username = findViewById(R.id.username);
-        password = findViewById(R.id.password);
+        username = findViewById(R.id.join_username);
+        password = findViewById(R.id.join_password);
         passwordCheck = findViewById(R.id.passwordCheck);
         name = findViewById(R.id.name);
         email = findViewById(R.id.email);
@@ -128,14 +128,13 @@ public class JoinActivity extends AppCompatActivity {
         } else {
             getImageFromUserDevice();
         }
-
     }
 
     public void getImageFromUserDevice() {
         final Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_PICK);
-
+        intent.setPackage("com.google.android.apps.photos");
         final Intent chooserIntent = Intent.createChooser(intent, "사진을 선택하세요.");
         startActivityForResult(chooserIntent, 1010);
     }

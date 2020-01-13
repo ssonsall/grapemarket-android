@@ -8,11 +8,13 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class BoardForDetail {
     private int id; // 시퀀스
     private String title; // 제목
@@ -23,7 +25,7 @@ public class BoardForDetail {
     private int category; // 상품 카테고리
 
     // 댓글
-    private List<Comment> comment;
+    private List<CommentForDetail> comment;
 
     private List<Likes> like; // 좋아요
 

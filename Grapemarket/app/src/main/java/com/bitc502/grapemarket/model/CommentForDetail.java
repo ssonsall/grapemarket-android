@@ -1,5 +1,9 @@
 package com.bitc502.grapemarket.model;
 
+import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
@@ -11,8 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class Comment {
-
+public class CommentForDetail  {
     private int id; // 시퀀스
     private String content; //내용
 
@@ -20,7 +23,7 @@ public class Comment {
 //	private User user; //id, username
 
     private User user;
-
+    private Bitmap userProfile;
     //	private Board board; //id
 
     private Board board; //id
@@ -29,4 +32,5 @@ public class Comment {
     private Timestamp createDate;
 
     private Timestamp updateDate;
+
 }
