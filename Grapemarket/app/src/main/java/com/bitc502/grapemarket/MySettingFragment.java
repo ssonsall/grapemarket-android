@@ -1,19 +1,25 @@
 package com.bitc502.grapemarket;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
-public class MySettingActivity extends AppCompatActivity {
+public class MySettingFragment extends Fragment {
     private Context mysettingContext;
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_setting);
-        mysettingContext = getApplicationContext();
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_my_setting, container, false);
+        mysettingContext = getContext();
+        return v;
     }
 
     //내 정보보기

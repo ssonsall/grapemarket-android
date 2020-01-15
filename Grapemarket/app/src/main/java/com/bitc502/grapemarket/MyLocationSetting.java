@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
-import com.bitc502.grapemarket.model.CurrentUserInfo;
+import com.bitc502.grapemarket.currentuserinfo.Session;
 import com.bitc502.grapemarket.model.UserLocationSetting;
 import com.google.gson.Gson;
 
@@ -43,7 +43,6 @@ public class MyLocationSetting extends AppCompatActivity {
     private UserLocationSetting userLocationSetting;
     private Boolean flag;
     private Button btnSettingUserAddress, btnSaveUserAddress;
-    private CurrentUserInfo currentUserInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +56,6 @@ public class MyLocationSetting extends AppCompatActivity {
         addressY = findViewById(R.id.myLocationSetLongitude);
         btnSettingUserAddress = findViewById(R.id.btnAddressSetting);
         btnSaveUserAddress = findViewById(R.id.btnAddressSave);
-        currentUserInfo = CurrentUserInfo.getInstance();
     }
 
     //동네설정 버튼
@@ -77,7 +75,7 @@ public class MyLocationSetting extends AppCompatActivity {
             mWebSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN); // 컨텐츠 사이즈 맞추기
             mWebSettings.setCacheMode(WebSettings.LOAD_NO_CACHE); // 브라우저 캐시 허용 여부
             mWebSettings.setDomStorageEnabled(true); // 로컬저장소 허용 여부
-            mWebView.loadUrl("https://192.168.43.40:8443/map/popup"); // 웹뷰에 표시할 웹사이트 주소, 웹뷰 시작
+            mWebView.loadUrl("https://192.168.43.40:8443/map/android/popup"); // 웹뷰에 표시할 웹사이트 주소, 웹뷰 시작
         } catch (Exception e) {
             Log.d("addressTest", e.toString());
         }
@@ -93,7 +91,7 @@ public class MyLocationSetting extends AppCompatActivity {
 
             @Override
             protected Boolean doInBackground(Void... voids) {
-                return Connect2Server.saveUserAddressSetting(address.getText().toString(),addressX.getText().toString(),addressY.getText().toString(),currentUserInfo.getUser().getId()+"");
+                return Connect2Server.saveUserAddressSetting(address.getText().toString(),addressX.getText().toString(),addressY.getText().toString(), Session.currentUserInfo.getUser().getId()+"");
             }
 
             @Override
@@ -105,6 +103,9 @@ public class MyLocationSetting extends AppCompatActivity {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 if(aBoolean){
+                    Session.currentUserInfo.getUser().setAddress(address.getText().toString());
+                    Session.currentUserInfo.getUser().setAddressX(Double.parseDouble(addressX.getText().toString()));
+                    Session.currentUserInfo.getUser().setAddressY(Double.parseDouble(addressY.getText().toString()));
                     Toast.makeText(myLocationSettingContext,"동네 설정 성공",Toast.LENGTH_LONG).show();
                 }else {
                     Toast.makeText(myLocationSettingContext,"동네 설정 실패",Toast.LENGTH_LONG).show();
@@ -143,9 +144,6 @@ public class MyLocationSetting extends AppCompatActivity {
                             Response response = client.newCall(okRequest).execute();
                             String res = response.body().string();
                             userLocationSetting = new Gson().fromJson(res,UserLocationSetting.class);
-//                            Log.d("please", userLocationSetting.getAddress());
-//                            Log.d("please", userLocationSetting.getAddressX());
-//                            Log.d("please", userLocationSetting.getAddressY());
                             return true;
                         } catch (Exception e) {
                             Log.d("please", e.toString());

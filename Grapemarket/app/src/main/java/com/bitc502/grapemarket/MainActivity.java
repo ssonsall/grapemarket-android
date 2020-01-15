@@ -12,13 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
-import com.bitc502.grapemarket.model.CurrentUserInfo;
+import com.bitc502.grapemarket.currentuserinfo.Session;
 
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     private TextView main_username;
@@ -55,9 +50,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 if(Connect2Server.sendLoginInfoToServer(username,password)){
-                    CurrentUserInfo session = CurrentUserInfo.getInstance();
-                    session.setUser(Connect2Server.getLoginUserInfo(username));
-                    Log.d("jsessiontest", session.getJSessionId());
+                    Session.currentUserInfo.setUser(Connect2Server.getLoginUserInfo(username));
+                    Log.d("jsessiontest", Session.currentUserInfo.getJSessionId());
                     return true;
                 }else {
                     return false;
@@ -98,9 +92,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 if(Connect2Server.sendLoginInfoToServer(testUsername,testPassword)){
-                    CurrentUserInfo session = CurrentUserInfo.getInstance();
-                    session.setUser(Connect2Server.getLoginUserInfo(testUsername));
-                    Log.d("jsessiontest", session.getJSessionId());
+                    Session.currentUserInfo.setUser(Connect2Server.getLoginUserInfo(testUsername));
+                    Log.d("jsessiontest", Session.currentUserInfo.getJSessionId());
                     return true;
                 }else {
                     return false;
@@ -111,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             protected void onPostExecute(Boolean loginResult) {
                 super.onPostExecute(loginResult);
                 if(loginResult) {
-                    intent = new Intent(getApplicationContext(), ListActivity.class);
+                    intent = new Intent(getApplicationContext(), MotherActivity.class);
                     startActivity(intent);
                 }else{
                     Toast.makeText(mainContext,"로그인에 실패했습니다.",Toast.LENGTH_LONG).show();

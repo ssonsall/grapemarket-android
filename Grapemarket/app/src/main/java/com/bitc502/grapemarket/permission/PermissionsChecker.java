@@ -25,4 +25,7 @@ public class PermissionsChecker {
     private boolean lacksPermission(String permission) {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED;
     }
+
+
+
 }

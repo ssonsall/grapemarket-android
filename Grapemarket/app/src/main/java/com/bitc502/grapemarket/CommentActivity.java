@@ -15,8 +15,6 @@ import android.widget.Toast;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
 import com.bitc502.grapemarket.model.BoardForDetail;
-import com.bitc502.grapemarket.model.CurrentUserInfo;
-import com.bitc502.grapemarket.recycler.BoardDetailImageAdapter;
 import com.bitc502.grapemarket.recycler.CommentAdapter;
 
 public class CommentActivity extends AppCompatActivity {

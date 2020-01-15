@@ -3,41 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="동네설정"
-            android:textSize="25sp" />
-
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:srcCompat="@android:drawable/ic_menu_search" />
-
-    </LinearLayout>
-
+    <include layout="@layout/my_progress_bar"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/board_list"
         android:layout_width="match_parent"
-        android:layout_height="622dp" />
-    <include layout="@layout/my_bottom_nav"/>
+        android:layout_height="match_parent" />
 </LinearLayout>

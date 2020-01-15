@@ -1,6 +1,10 @@
 package com.bitc502.grapemarket;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,7 +12,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,8 +25,7 @@ import com.bitc502.grapemarket.recycler.BoardListAdapter;
 
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
-
+public class SearchFragment extends Fragment {
     private EditText searchInput;
     private Spinner searchCategory;
     private String category;
@@ -28,15 +33,17 @@ public class SearchActivity extends AppCompatActivity {
     private RecyclerView boardListRecylerView;
     private BoardListAdapter boardListAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private ConstraintLayout progressBarLayout;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
-        searchContext = getApplicationContext();
-        boardListRecylerView = findViewById(R.id.search_list);
-        searchCategory = findViewById(R.id.search_category);
-        searchInput = findViewById(R.id.searchInput);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_search, container, false);
+        searchContext = getContext();
+        progressBarLayout = v.findViewById(R.id.progressBarLayout);
+        boardListRecylerView = v.findViewById(R.id.search_list);
+        searchCategory = v.findViewById(R.id.search_category);
+        searchInput = v.findViewById(R.id.searchInput);
         searchCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -47,6 +54,7 @@ public class SearchActivity extends AppCompatActivity {
 
             }
         });
+        return v;
     }
 
     public void btnProductSearchClicked(View v){
@@ -55,6 +63,7 @@ public class SearchActivity extends AppCompatActivity {
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
+                    progressBarLayout.setVisibility(View.VISIBLE);
                 }
 
                 @Override
@@ -76,6 +85,7 @@ public class SearchActivity extends AppCompatActivity {
                     boardListAdapter = new BoardListAdapter();
                     boardListAdapter.setBoardList(boardForList);
                     boardListRecylerView.setAdapter(boardListAdapter);
+                    progressBarLayout.setVisibility(View.GONE);
                 }
             }.execute();
         }catch (Exception e){

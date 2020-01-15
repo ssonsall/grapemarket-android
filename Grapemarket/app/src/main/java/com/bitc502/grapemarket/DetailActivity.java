@@ -15,8 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
+import com.bitc502.grapemarket.currentuserinfo.Session;
 import com.bitc502.grapemarket.model.BoardForDetail;
-import com.bitc502.grapemarket.model.CurrentUserInfo;
 import com.bitc502.grapemarket.recycler.BoardDetailImageAdapter;
 
 
@@ -144,9 +144,9 @@ public class DetailActivity extends AppCompatActivity {
                 content.setText(boardForDetail.getContent());
                 userProfile.setImageBitmap(boardForDetail.getUserProfile());
 
-                CurrentUserInfo currentUserInfo = CurrentUserInfo.getInstance();
+                //CurrentUserInfo currentUserInfo = CurrentUserInfo.getInstance();
                 //수정, 삭제, 거래완료 버튼 표시할지 체크
-                if(boardForDetail.getUser().getId()==currentUserInfo.getUser().getId()){
+                if(boardForDetail.getUser().getId()== Session.currentUserInfo.getUser().getId()){
                     btnDetailModify.setVisibility(View.VISIBLE);
                     btnDetailDelete.setVisibility(View.VISIBLE);
                     btnCompleteTrade.setVisibility(View.VISIBLE);

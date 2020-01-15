@@ -2,10 +2,15 @@ package com.bitc502.grapemarket.connect2server;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
 
+import com.bitc502.grapemarket.BuildConfig;
+import com.bitc502.grapemarket.R;
+import com.bitc502.grapemarket.currentuserinfo.Session;
 import com.bitc502.grapemarket.model.Board;
 import com.bitc502.grapemarket.model.BoardForDetail;
 import com.bitc502.grapemarket.model.BoardForList;
@@ -22,7 +27,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.Locale;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -50,12 +55,13 @@ public class Connect2Server {
     private static final String COMMENT_WRITE = ip_address + "/android/commentWrite";
     private static final String USER_ADDRESS_SETTING = ip_address + "/android/saveUserAddress";
     private static final String GET_SAVED_ADDRESS = ip_address + "/android/getSavedAddress";
-    private static CurrentUserInfo currentUserInfo = CurrentUserInfo.getInstance();
-
+    private static final String SAVE_ADDRESS_AUTH = ip_address + "/android/saveAddressAuth";
+    private static final String SEARCH = ip_address + "/android/search";
 
     //Login
     public static Boolean sendLoginInfoToServer(String username, String password) {
         try {
+            OkHttpClient client = getUnsafeOkHttpClient();
             //OKHTTP3
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
@@ -66,16 +72,22 @@ public class Connect2Server {
             Request request = new Request.Builder()
                     .url(LOGIN)
                     .addHeader("DeviceType", "android")
+                    .addHeader("User-Agent", String.format("%s/%s (Android %s; %s; %s %s; %s)",
+                            "GrapeMarket",
+                            "1.0",
+                            Build.VERSION.RELEASE,
+                            Build.MODEL,
+                            Build.BRAND,
+                            Build.DEVICE,
+                            Locale.getDefault().getLanguage()))
                     .post(requestBody)
                     .build();
 
-            //OkHttpClient client = new OkHttpClient();
-            OkHttpClient client = getUnsafeOkHttpClient();
             Response response = client.newCall(request).execute();
             String res = response.body().string();
             String jsessionid = getJsessionId(response.header("Set-Cookie"));
             if (res.equals("ok")) {
-                currentUserInfo.setJSessionId(jsessionid);
+                Session.currentUserInfo.setJSessionId(jsessionid);
                 return true;
             } else {
                 Log.d("myerror", res + "            <<<<<<<<<<<<<<로그인sdfsaf 실패");
@@ -158,7 +170,7 @@ public class Connect2Server {
         //OKHTTP3
         try {
             Request request = new Request.Builder()
-                    .addHeader("Cookie",currentUserInfo.getJSessionId())
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                     .url(DETAIL + id)
                     .get()
                     .build();
@@ -190,7 +202,7 @@ public class Connect2Server {
                 if (i == 0) { // 작성자 유저프로필 땡겨오기
                     //OKHTTP3
                     Request requestForImage = new Request.Builder()
-                            .addHeader("Cookie",currentUserInfo.getJSessionId())
+                            .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                             .url("https://192.168.43.40:8443/upload/" + board.getUser().getUserProfile())
                             .get()
                             .build();
@@ -207,7 +219,7 @@ public class Connect2Server {
                     if (!TextUtils.isEmpty(board.getImage1())) {
                         //OKHTTP3
                         Request requestForImage = new Request.Builder()
-                                .addHeader("Cookie",currentUserInfo.getJSessionId())
+                                .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                                 .url("https://192.168.43.40:8443/upload/" + board.getImage1())
                                 .get()
                                 .build();
@@ -222,7 +234,7 @@ public class Connect2Server {
                     if (!TextUtils.isEmpty(board.getImage2())) {
                         //OKHTTP3
                         Request requestForImage = new Request.Builder()
-                                .addHeader("Cookie",currentUserInfo.getJSessionId())
+                                .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                                 .url("https://192.168.43.40:8443/upload/" + board.getImage2())
                                 .get()
                                 .build();
@@ -237,7 +249,7 @@ public class Connect2Server {
                     if (!TextUtils.isEmpty(board.getImage3())) {
                         //OKHTTP3
                         Request requestForImage = new Request.Builder()
-                                .addHeader("Cookie",currentUserInfo.getJSessionId())
+                                .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                                 .url("https://192.168.43.40:8443/upload/" + board.getImage3())
                                 .get()
                                 .build();
@@ -252,7 +264,7 @@ public class Connect2Server {
                     if (!TextUtils.isEmpty(board.getImage4())) {
                         //OKHTTP3
                         Request requestForImage = new Request.Builder()
-                                .addHeader("Cookie",currentUserInfo.getJSessionId())
+                                .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                                 .url("https://192.168.43.40:8443/upload/" + board.getImage4())
                                 .get()
                                 .build();
@@ -269,7 +281,7 @@ public class Connect2Server {
                     if (!TextUtils.isEmpty(board.getImage5())) {
                         //OKHTTP3
                         Request requestForImage = new Request.Builder()
-                                .addHeader("Cookie",currentUserInfo.getJSessionId())
+                                .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                                 .url("https://192.168.43.40:8443/upload/" + board.getImage5())
                                 .get()
                                 .build();
@@ -290,7 +302,7 @@ public class Connect2Server {
             for (int i = 0; i < board.getComment().size(); i++) {
                 //OKHTTP3
                 Request requestForImage = new Request.Builder()
-                        .addHeader("Cookie",currentUserInfo.getJSessionId())
+                        .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                         .url("https://192.168.43.40:8443/upload/" + board.getComment().get(i).getUser().getUserProfile())
                         .get()
                         .build();
@@ -323,7 +335,7 @@ public class Connect2Server {
         //OKHTTP3
         try {
             Request request = new Request.Builder()
-                    .addHeader("Cookie",currentUserInfo.getJSessionId())
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                     .url(All_LIST)
                     .get()
                     .build();
@@ -359,7 +371,7 @@ public class Connect2Server {
                 try {
                     //OKHTTP3
                     Request requestForImage = new Request.Builder()
-                            .addHeader("Cookie",currentUserInfo.getJSessionId())
+                            .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                             .url("https://192.168.43.40:8443/upload/" + boards.get(i).getImage1())
                             .get()
                             .build();
@@ -420,11 +432,12 @@ public class Connect2Server {
 
             final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/*");
 
-            File sourceFile1 = new File("");
-            File sourceFile2 = new File("");
-            File sourceFile3 = new File("");
-            File sourceFile4 = new File("");
-            File sourceFile5 = new File("");
+            File sourceFile1 = null;
+            File sourceFile2 = null;
+            File sourceFile3 = null;
+            File sourceFile4 = null;
+            File sourceFile5 = null;
+
             String fileName1 = "";
             String fileName2 = "";
             String fileName3 = "";
@@ -432,8 +445,9 @@ public class Connect2Server {
             String fileName5 = "";
 
             Log.d("mywrite", imagePathList.size() + "");
-            Log.d("mywrite", imagePathList.get(0));
-            for (int i = 0; i < imagePathList.size(); i++) {
+
+            int imagePathListSize = imagePathList.size();
+            for (int i = 0; i < imagePathListSize; i++) {
                 if (i == 0) {
                     sourceFile1 = new File(imagePathList.get(i));
                     fileName1 = imagePathList.get(i).substring(imagePathList.get(i).lastIndexOf("/") + 1);
@@ -451,6 +465,44 @@ public class Connect2Server {
                     fileName5 = imagePathList.get(i).substring(imagePathList.get(i).lastIndexOf("/") + 1);
                 }
             }
+            /*
+             * 사용자가 사진을 1개만 선택했다면 나머지 4개는
+             * null 파일(size가 0인 파일)이라도 넘겨야 되는데
+             * sourceFile1 = new File("") 이런 식으로 처리하면 FileNotFound Exception에 걸리고
+             * sourceFile1 = null 이렇게 넘기면 NullPoint Exception에 걸림
+             * 그래서 그냥 더미 파일(사이즈 0)을 생성해서 일단 넘기고
+             * 데이터 전송과 결과받기가 끝나면 만들었던 더미 파일을 삭제하는 식으로 구현함.
+             */
+
+            //사진이 5개 미만일 경우 dummy 파일 생성 (0개인 경우는 아예 이쪽으로 오지 못하게 해야함)
+            for (int i = 0; i < 5; i++) {
+                if (imagePathListSize == 1) {
+                    sourceFile2 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy2.podo");
+                    sourceFile2.createNewFile();
+                    sourceFile3 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy3.podo");
+                    sourceFile3.createNewFile();
+                    sourceFile4 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy4.podo");
+                    sourceFile4.createNewFile();
+                    sourceFile5 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy5.podo");
+                    sourceFile5.createNewFile();
+                } else if (imagePathListSize == 2) {
+                    sourceFile3 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy3.podo");
+                    sourceFile3.createNewFile();
+                    sourceFile4 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy4.podo");
+                    sourceFile4.createNewFile();
+                    sourceFile5 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy5.podo");
+                    sourceFile5.createNewFile();
+                } else if (imagePathListSize == 3) {
+                    sourceFile4 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy4.podo");
+                    sourceFile4.createNewFile();
+                    sourceFile5 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy5.podo");
+                    sourceFile5.createNewFile();
+                } else if (imagePathListSize == 4) {
+                    sourceFile5 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy5.podo");
+                    sourceFile5.createNewFile();
+                }
+            }
+
             //OKHTTP3
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
@@ -467,13 +519,33 @@ public class Connect2Server {
                     .build();
 
             Request request = new Request.Builder()
-                    .addHeader("Cookie",currentUserInfo.getJSessionId())
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                     .url(WRITE)
                     .post(requestBody)
                     .build();
             OkHttpClient client = getUnsafeOkHttpClient();
             Response response = client.newCall(request).execute();
             String res = response.body().string();
+
+            //dummy 파일 삭제
+            for (int i = 0; i < 5; i++) {
+                if (imagePathListSize == 1) {
+                    sourceFile2.delete();
+                    sourceFile3.delete();
+                    sourceFile4.delete();
+                    sourceFile5.delete();
+                } else if (imagePathListSize == 2) {
+                    sourceFile3.delete();
+                    sourceFile4.delete();
+                    sourceFile5.delete();
+                } else if (imagePathListSize == 3) {
+                    sourceFile4.delete();
+                    sourceFile5.delete();
+                } else if (imagePathListSize == 4) {
+                    sourceFile5.delete();
+                }
+            }
+
             if (res.equals("success")) {
                 return 1;
             } else {
@@ -496,7 +568,7 @@ public class Connect2Server {
                     .build();
 
             Request request = new Request.Builder()
-                    .addHeader("Cookie",currentUserInfo.getJSessionId())
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                     .url(COMMENT_WRITE)
                     .post(requestBody)
                     .build();
@@ -519,18 +591,18 @@ public class Connect2Server {
     }
 
     //동네설정 저장
-    public static Boolean saveUserAddressSetting(String address,String addressX,String addressY,String currentUserId){
-        try{
+    public static Boolean saveUserAddressSetting(String address, String addressX, String addressY, String currentUserId) {
+        try {
             //OKHTTP3
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("address",address)
-                    .addFormDataPart("addressX",addressX)
-                    .addFormDataPart("addressY",addressY)
+                    .addFormDataPart("address", address)
+                    .addFormDataPart("addressX", addressX)
+                    .addFormDataPart("addressY", addressY)
                     .build();
 
             Request request = new Request.Builder()
-                    .addHeader("Cookie",currentUserInfo.getJSessionId())
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                     .url(USER_ADDRESS_SETTING)
                     .post(requestBody)
                     .build();
@@ -538,38 +610,161 @@ public class Connect2Server {
             OkHttpClient client = getUnsafeOkHttpClient();
             Response response = client.newCall(request).execute();
             String res = response.body().string();
-            if(res.equals("success")) {
+            if (res.equals("success")) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d("myerror", e.toString());
             return false;
         }
     }
 
     //저장된 주소 정보 가져오기
-    public static UserLocationSetting getSavedAddress(String currentUserId){
-        try{
+    public static UserLocationSetting getSavedAddress() {
+        try {
+            //OKHTTP3
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(GET_SAVED_ADDRESS)
+                    .get()
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            UserLocationSetting userLocationSetting = new Gson().fromJson(res, UserLocationSetting.class);
+            return userLocationSetting;
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return null;
+        }
+    }
+
+    public static boolean saveAddressAuth() {
+        try {
+            //OKHTTP3
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(SAVE_ADDRESS_AUTH)
+                    .get()
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            if (res.equals("success")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return false;
+        }
+    }
+
+    public static List<BoardForList> search(String categoryString, String userInput) {
+        try {
+            int category = 0;
+            //카테고리 정보 숫자로 세팅
+            if (categoryString.equals("전체")) {
+                category = 1;
+            } else if (categoryString.equals("인기매물")) {
+                category = 2;
+            } else if (categoryString.equals("디지털/가전")) {
+                category = 3;
+            } else if (categoryString.equals("가구/인테리어")) {
+                category = 4;
+            } else if (categoryString.equals("유아동/유아도서")) {
+                category = 5;
+            } else if (categoryString.equals("생활/가공식품")) {
+                category = 6;
+            } else if (categoryString.equals("여성의류")) {
+                category = 7;
+            } else if (categoryString.equals("여성잡화")) {
+                category = 8;
+            } else if (categoryString.equals("뷰티/미용")) {
+                category = 9;
+            } else if (categoryString.equals("남성패션/잡화")) {
+                category = 10;
+            } else if (categoryString.equals("스포츠/레저")) {
+                category = 11;
+            } else if (categoryString.equals("게임/취미")) {
+                category = 12;
+            } else if (categoryString.equals("도서/티켓/음반")) {
+                category = 13;
+            } else if (categoryString.equals("반려동물용품")) {
+                category = 14;
+            } else if (categoryString.equals("기타 중고물품")) {
+                category = 15;
+            } else if (categoryString.equals("삽니다")) {
+                category = 16;
+            }
+
             //OKHTTP3
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("currentUserId",currentUserId)
+                    .addFormDataPart("category", category + "")
+                    .addFormDataPart("userInput", userInput)
                     .build();
 
             Request request = new Request.Builder()
-                    .addHeader("Cookie",currentUserInfo.getJSessionId())
-                    .url(GET_SAVED_ADDRESS)
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(SEARCH)
                     .post(requestBody)
                     .build();
 
             OkHttpClient client = getUnsafeOkHttpClient();
             Response response = client.newCall(request).execute();
             String res = response.body().string();
-            UserLocationSetting userLocationSetting = new Gson().fromJson(res,UserLocationSetting.class);
-            return userLocationSetting;
-        }catch (Exception e){
+            Type collectionType = new TypeToken<List<Board>>() {
+            }.getType();
+            List<Board> boards = new Gson().fromJson(res, collectionType);
+            Log.d("searcht", "ssssiiizzzz >>>>    " + boards.size());
+            //////
+            List<BoardForList> boardForLists = new ArrayList<>();
+            for (int i = 0; i < boards.size(); i++) {
+                //boardList.add(new Board(R.mipmap.ic_launcher,"제목","위치","유저네임","가격"));
+                BoardForList boardForList = new BoardForList();
+                boardForList.setAddressRange(boards.get(i).getAddressRange());
+                boardForList.setCategory(boards.get(i).getCategory());
+                boardForList.setContent(boards.get(i).getContent());
+                boardForList.setId(boards.get(i).getId());
+                boardForList.setCreateDate(boards.get(i).getCreateDate());
+                boardForList.setUpdateDate(boards.get(i).getUpdateDate());
+                boardForList.setPrice(boards.get(i).getPrice());
+                boardForList.setState(boards.get(i).getState());
+                boardForList.setTitle(boards.get(i).getTitle());
+                boardForList.setComment(boards.get(i).getComment());
+                boardForList.setLike(boards.get(i).getLike());
+                boardForList.setUser(boards.get(i).getUser());
+
+                //이미지 세팅
+                //이미지 땡겨오기 위한 OKHTTP3 접속
+                Bitmap bitmap = null;
+                try {
+                    //OKHTTP3
+                    Request requestForImage = new Request.Builder()
+                            .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                            .url("https://192.168.43.40:8443/upload/" + boards.get(i).getImage1())
+                            .get()
+                            .build();
+                    OkHttpClient clientForImage = getUnsafeOkHttpClient();
+                    Response responseForImage = clientForImage.newCall(requestForImage).execute();
+                    InputStream inputStream = responseForImage.body().byteStream();
+                    Log.d("ttt111", inputStream.toString());
+                    bitmap = BitmapFactory.decodeStream(inputStream);
+                    boardForList.setImage1(bitmap);
+                } catch (Exception e) {
+                    Log.d("searcht", e.toString());
+                }
+                boardForLists.add(boardForList);
+            }
+            ////////////
+            return boardForLists;
+        } catch (Exception e) {
             Log.d("myerror", e.toString());
             return null;
         }
@@ -629,16 +824,18 @@ public class Connect2Server {
         }
     }
 
-    public static String getJsessionId(String rawJsessionId){
+    public static String getJsessionId(String rawJsessionId) {
         String jSessionId = "";
         int rawJsessionIdSize = rawJsessionId.length();
-        for(int i = 0; i < rawJsessionIdSize; i++) {
-            if(rawJsessionId.charAt(i) == ';'){
+        for (int i = 0; i < rawJsessionIdSize; i++) {
+            if (rawJsessionId.charAt(i) == ';') {
                 break;
             }
             jSessionId += rawJsessionId.charAt(i);
         }
-        Log.d("jsessiontest", "파싱한 >> "+jSessionId);
+        Log.d("jsessiontest", "파싱한 >> " + jSessionId);
         return jSessionId;
     }
+
+
 }

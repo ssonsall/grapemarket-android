@@ -1,17 +1,20 @@
 package com.bitc502.grapemarket;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
 import com.bitc502.grapemarket.model.BoardForList;
@@ -19,50 +22,31 @@ import com.bitc502.grapemarket.recycler.BoardListAdapter;
 
 import java.util.List;
 
-public class ListActivity extends AppCompatActivity {
+public class ListFragment extends Fragment {
     private RecyclerView boardListRecylerView;
     private BoardListAdapter boardListAdapter;
     private LinearLayoutManager linearLayoutManager;
     private Context listContext;
+    private ConstraintLayout progressBarLayout;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
-        listContext = getApplicationContext();
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_list, container, false);
+        listContext = getContext();
         //Recycler View 가져오기
-        boardListRecylerView = findViewById(R.id.board_list);
+        boardListRecylerView = v.findViewById(R.id.board_list);
+        progressBarLayout = v.findViewById(R.id.progressBarLayout);
         setBoardList();
-    }
-
-    //글쓰기
-    public void btnBottomWrite(View v){
-        Intent intent = new Intent(listContext,WriteActivity.class);
-        startActivity(intent);
-    }
-
-    public void btnMySettingClicked(View v){
-        Intent intent = new Intent(listContext,MySettingActivity.class);
-        startActivity(intent);
-    }
-
-    public void btnBottomSearchClicked(View v){
-        Intent intent = new Intent(listContext,SearchActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onBackPressed() {
-        //로그인 성공으로 ListActivity 진입한 후
-        //백 키로 다시 로그인 화면으로 가는걸 막기 위해
-        //걍 아무것도 안적으면 이 액티비티에서 백 키 동작 안함
+        return v;
     }
 
     public void setBoardList(){
-        new AsyncTask<Void,List<BoardForList>,List<BoardForList>>(){
+        new AsyncTask<Void, List<BoardForList>,List<BoardForList>>(){
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                progressBarLayout.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -87,8 +71,8 @@ public class ListActivity extends AppCompatActivity {
                 boardListAdapter.setBoardList(boardForList);
 
                 boardListRecylerView.setAdapter(boardListAdapter);
+                progressBarLayout.setVisibility(View.GONE);
             }
         }.execute();
     }
-
 }

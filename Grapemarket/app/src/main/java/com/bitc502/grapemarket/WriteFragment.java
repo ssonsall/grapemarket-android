@@ -1,7 +1,9 @@
 package com.bitc502.grapemarket;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.content.ClipData;
@@ -13,9 +15,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -30,30 +33,32 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WriteActivity extends AppCompatActivity {
+public class WriteFragment extends Fragment {
     private static final String[] PERMISSIONS_READ_STORAGE = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
-    PermissionsChecker checker;
-
+    private static final String[] PERMISSIONS_WRITE_STORAGE = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private PermissionsChecker checker;
+    private boolean permissionRead, permissionWrite;
     private ImageView selectedImage1,selectedImage2,selectedImage3,selectedImage4,selectedImage5 ;
     private EditText write_title,write_price,write_content;
     private List<String> imagePathList;
     private Context writeContext;
     private Spinner write_category;
     private String category;
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_write);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+       View v = inflater.inflate(R.layout.activity_write, container, false);
 
-        checker = new PermissionsChecker(this);
-        writeContext = getApplicationContext();
+        writeContext = getContext();
+        checker = new PermissionsChecker(writeContext);
+        permissionRead = false;
+        permissionWrite = false;
 
-        selectedImage1 = findViewById(R.id.wirte_selectedImg1);
-        selectedImage2 = findViewById(R.id.wirte_selectedImg2);
-        selectedImage3 = findViewById(R.id.wirte_selectedImg3);
-        selectedImage4 = findViewById(R.id.wirte_selectedImg4);
-        selectedImage5 = findViewById(R.id.wirte_selectedImg5);
+        selectedImage1 = v.findViewById(R.id.wirte_selectedImg1);
+        selectedImage2 = v.findViewById(R.id.wirte_selectedImg2);
+        selectedImage3 = v.findViewById(R.id.wirte_selectedImg3);
+        selectedImage4 = v.findViewById(R.id.wirte_selectedImg4);
+        selectedImage5 = v.findViewById(R.id.wirte_selectedImg5);
 
         selectedImage1.setVisibility(View.INVISIBLE);
         selectedImage2.setVisibility(View.INVISIBLE);
@@ -63,10 +68,10 @@ public class WriteActivity extends AppCompatActivity {
 
         imagePathList = new ArrayList<>();
 
-        write_category = findViewById(R.id.write_category);
-        write_title = findViewById(R.id.write_title);
-        write_price = findViewById(R.id.write_price);
-        write_content = findViewById(R.id.write_content);
+        write_category = v.findViewById(R.id.write_category);
+        write_title = v.findViewById(R.id.write_title);
+        write_price = v.findViewById(R.id.write_price);
+        write_content = v.findViewById(R.id.write_content);
 
 
         write_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -79,6 +84,8 @@ public class WriteActivity extends AppCompatActivity {
 
             }
         });
+        
+        return v;
     }
 
     public void btnWriteSelectImageClicked(View v){
@@ -91,7 +98,19 @@ public class WriteActivity extends AppCompatActivity {
 
         if (checker.lacksPermissions(PERMISSIONS_READ_STORAGE)) {
             startPermissionsActivity(PERMISSIONS_READ_STORAGE);
-        } else {
+            permissionRead = true;
+        }else{
+            permissionRead = true;
+        }
+
+        if (checker.lacksPermissions(PERMISSIONS_WRITE_STORAGE)) {
+            startPermissionsActivity(PERMISSIONS_WRITE_STORAGE);
+            permissionWrite = true;
+        }else{
+            permissionWrite = true;
+        }
+
+        if(permissionRead&&permissionWrite) {
             getImageFromUserDevice();
         }
     }
@@ -109,13 +128,13 @@ public class WriteActivity extends AppCompatActivity {
         //구글 포토 설치되어있는지 확인하는 코드 필요
         intent.setPackage("com.google.android.apps.photos");
         final Intent chooserIntent = Intent.createChooser(intent, "사진을 선택하세요.");
-        startActivityForResult(chooserIntent, 1010);
+        this.startActivityForResult(chooserIntent, 1010);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == 1010) {
+        if (resultCode == getActivity().RESULT_OK && requestCode == 1010) {
             try {
                 if (data == null) {
                     return;
@@ -129,7 +148,7 @@ public class WriteActivity extends AppCompatActivity {
                     for(int i = 0 ; i < selectedImageCount; i++){
                         imageUriList.add(clipData.getItemAt(i).getUri());
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                        Cursor cursor = getContentResolver().query(imageUriList.get(i), filePathColumn, null, null, null);
+                        Cursor cursor = getActivity().getContentResolver().query(imageUriList.get(i), filePathColumn, null, null, null);
                         if (cursor != null) {
                             cursor.moveToFirst();
                             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
@@ -200,6 +219,6 @@ public class WriteActivity extends AppCompatActivity {
     }
 
     private void startPermissionsActivity(String[] permission) {
-        PermissionsActivity.startActivityForResult(this, 0, permission);
+        PermissionsActivity.startActivityForResult(getActivity(), 0, permission);
     }
 }

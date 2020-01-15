@@ -14,6 +14,12 @@
         android:text="등록된 위치" />
 
     <TextView
+        android:id="@+id/savedAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
         android:id="@+id/savedAddressX"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,6 +36,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="현재 위치" />
+
+    <TextView
+        android:id="@+id/currentAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
 
     <TextView
         android:id="@+id/currentAddressX"
