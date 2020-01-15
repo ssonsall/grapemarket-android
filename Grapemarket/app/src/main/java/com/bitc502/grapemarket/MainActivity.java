@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         main_password = findViewById(R.id.main_password);
         mainContext = getApplicationContext();
 
-        testUsername = "a";
+        testUsername = "iu";
         testPassword = "1";
     }
 

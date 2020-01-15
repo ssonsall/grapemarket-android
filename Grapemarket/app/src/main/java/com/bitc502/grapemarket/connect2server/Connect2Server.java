@@ -14,6 +14,7 @@ import com.bitc502.grapemarket.currentuserinfo.Session;
 import com.bitc502.grapemarket.model.Board;
 import com.bitc502.grapemarket.model.BoardForDetail;
 import com.bitc502.grapemarket.model.BoardForList;
+import com.bitc502.grapemarket.model.ChatList;
 import com.bitc502.grapemarket.model.CommentForDetail;
 import com.bitc502.grapemarket.model.CurrentUserInfo;
 import com.bitc502.grapemarket.model.UserLocationSetting;
@@ -57,6 +58,7 @@ public class Connect2Server {
     private static final String GET_SAVED_ADDRESS = ip_address + "/android/getSavedAddress";
     private static final String SAVE_ADDRESS_AUTH = ip_address + "/android/saveAddressAuth";
     private static final String SEARCH = ip_address + "/android/search";
+    private static final String CHAT_LIST = ip_address + "/android/chatList";
 
     //Login
     public static Boolean sendLoginInfoToServer(String username, String password) {
@@ -766,6 +768,25 @@ public class Connect2Server {
             return boardForLists;
         } catch (Exception e) {
             Log.d("myerror", e.toString());
+            return null;
+        }
+    }
+
+    public static ChatList getChatList(){
+        try{
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(CHAT_LIST)
+                    .get()
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            ChatList chatList = new Gson().fromJson(res,ChatList.class);
+            return chatList;
+        }catch (Exception e){
+            Log.d("mychatlist", e.toString());
             return null;
         }
     }
