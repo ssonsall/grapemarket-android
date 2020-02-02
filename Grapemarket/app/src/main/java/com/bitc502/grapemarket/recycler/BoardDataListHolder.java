@@ -28,6 +28,9 @@ public class BoardDataListHolder extends RecyclerView.ViewHolder {
     private TextView location;
     private TextView username;
     private TextView price;
+    private TextView cntComment;
+    private TextView cntLike;
+
     private int id;
 
 
@@ -38,6 +41,8 @@ public class BoardDataListHolder extends RecyclerView.ViewHolder {
         location = itemView.findViewById(R.id.location);
         username = itemView.findViewById(R.id.list_username);
         price = itemView.findViewById(R.id.price);
+        cntComment = itemView.findViewById(R.id.cntComment);
+        cntLike = itemView.findViewById(R.id.cntLike);
         itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {

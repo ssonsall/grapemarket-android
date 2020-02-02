@@ -1,5 +1,6 @@
 package com.bitc502.grapemarket.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class Message {
+public class Message implements Serializable {
 
     private int id; // 시퀀스
     private String message; //메시지 내용

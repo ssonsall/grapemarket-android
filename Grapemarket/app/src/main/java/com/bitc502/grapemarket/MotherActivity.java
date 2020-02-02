@@ -2,6 +2,7 @@ package com.bitc502.grapemarket;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -20,8 +21,12 @@ public class MotherActivity extends AppCompatActivity {
     private WriteFragment writeFragment = new WriteFragment();
     private SearchFragment searchFragment = new SearchFragment();
     private ChattingFragment chattingFragment = new ChattingFragment();
+    private ChattingRoomFragment chattingRoomFragment = new ChattingRoomFragment();
     private MySettingFragment mySettingFragment = new MySettingFragment();
-
+    private View systemSoftKey;
+    final int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            |View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            |View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +71,20 @@ public class MotherActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        systemSoftKey = getWindow().getDecorView();
+        systemSoftKey.setSystemUiVisibility(uiOptions);
+    }
+
+    //Fragment -> Fragment 전환시 사용할 메서드
+    public void replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_frame ,fragment).commitAllowingStateLoss();
+    }
+
     //Fragment 안의 버튼 세팅
     public void btnWriteSelectImageClicked(View v) {
         writeFragment.btnWriteSelectImageClicked(v);
@@ -75,12 +94,22 @@ public class MotherActivity extends AppCompatActivity {
         writeFragment.btnWriteComplete(v);
     }
 
+    public void btnImgDelete1(View v){writeFragment.btnImgDelete1(v);}
+
+    public void btnImgDelete2(View v){writeFragment.btnImgDelete2(v);}
+
+    public void btnImgDelete3(View v){writeFragment.btnImgDelete3(v);}
+
+    public void btnImgDelete4(View v){writeFragment.btnImgDelete4(v);}
+
+    public void btnImgDelete5(View v){writeFragment.btnImgDelete5(v);}
+
     public void btnProductSearchClicked(View v) {
         searchFragment.btnProductSearchClicked(v);
     }
 
-    public void btnMyInfoClicked(View v) {
-        mySettingFragment.btnMyInfoClicked(v);
+    public void btnMyProfileClicked(View v) {
+        mySettingFragment.btnMyProfileClicked(v);
     }
 
     public void btnLocationSetClicked(View v) {
@@ -98,4 +127,5 @@ public class MotherActivity extends AppCompatActivity {
     public void btnLogoutClicked(View v) {
         mySettingFragment.btnLogoutClicked(v);
     }
+
 }

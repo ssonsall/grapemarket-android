@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -19,7 +20,7 @@ import com.bitc502.grapemarket.recycler.BoardListAdapter;
 
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private EditText searchInput;
     private Spinner searchCategory;
@@ -28,7 +29,7 @@ public class SearchActivity extends AppCompatActivity {
     private RecyclerView boardListRecylerView;
     private BoardListAdapter boardListAdapter;
     private LinearLayoutManager linearLayoutManager;
-
+    private ArrayAdapter spinnerAdpater;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,16 +38,31 @@ public class SearchActivity extends AppCompatActivity {
         boardListRecylerView = findViewById(R.id.search_list);
         searchCategory = findViewById(R.id.search_category);
         searchInput = findViewById(R.id.searchInput);
-        searchCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                category = (String)adapterView.getItemAtPosition(i);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
 
-            }
-        });
+        spinnerAdpater= ArrayAdapter.createFromResource(this,R.array.search_category,R.layout.spinner_dialog_layout);
+        spinnerAdpater.setDropDownViewResource(R.layout.spinner_text_setting);
+        searchCategory.setAdapter(spinnerAdpater);
+        searchCategory.setOnItemSelectedListener(this);
+//        searchCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                category = (String)adapterView.getItemAtPosition(i);
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        category = (String)adapterView.getItemAtPosition(i);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 
     public void btnProductSearchClicked(View v){

@@ -2,6 +2,7 @@ package com.bitc502.grapemarket.model;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class BoardForList {
+public class BoardForList implements Serializable {
     private int id; // 시퀀스
     private String title; // 제목
     private String content; // 내용

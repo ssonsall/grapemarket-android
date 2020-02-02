@@ -14,6 +14,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class MyLocationSetting extends AppCompatActivity {
     private UserLocationSetting userLocationSetting;
     private Boolean flag;
     private Button btnSettingUserAddress, btnSaveUserAddress;
+    private LinearLayout myCurrentLocationShowLayout,locationSettingWebviewLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,18 +52,28 @@ public class MyLocationSetting extends AppCompatActivity {
         setContentView(R.layout.activity_my_location_setting);
         flag = false;
         myLocationSettingContext = getApplicationContext();
+        myCurrentLocationShowLayout = findViewById(R.id.myCurrentLocationShowLayout);
+        locationSettingWebviewLayout = findViewById(R.id.locationSettingWebviewLayout);
         mWebView = findViewById(R.id.webView);
         address = findViewById(R.id.myLocationSetAddress);
+        setSavedAddressData();
+
         addressX = findViewById(R.id.myLocationSetLatitude);
         addressY = findViewById(R.id.myLocationSetLongitude);
         btnSettingUserAddress = findViewById(R.id.btnAddressSetting);
         btnSaveUserAddress = findViewById(R.id.btnAddressSave);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     //동네설정 버튼
     public void btnAddressSettingClicked(View v) {
         try {
-            mWebView.setWebViewClient(new MyWebViewClient());
+            locationSettingWebviewLayout.setVisibility(View.VISIBLE);
+            mWebView.setWebViewClient(new MyLocationSettingWebViewClient());
             mWebView.setHorizontalScrollBarEnabled(false);
             mWebSettings = mWebView.getSettings(); //세부 세팅 등록
             mWebSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -87,6 +99,7 @@ public class MyLocationSetting extends AppCompatActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                mWebView.setVisibility(View.GONE);
             }
 
             @Override
@@ -114,7 +127,7 @@ public class MyLocationSetting extends AppCompatActivity {
         }.execute();
     }
 
-    private class MyWebViewClient extends WebViewClient {
+    private class MyLocationSettingWebViewClient extends WebViewClient {
         //Override 된 함수들에 대한 공부 필요.
         //일단 원하는대로 동작은 하는데 잘 이해가 안됨.
         @Override
@@ -163,6 +176,8 @@ public class MyLocationSetting extends AppCompatActivity {
                             address.setText(userLocationSetting.getAddress());
                             addressX.setText(userLocationSetting.getAddressX());
                             addressY.setText(userLocationSetting.getAddressY());
+                            //myCurrentLocationShowLayout.setVisibility(View.VISIBLE);
+                            locationSettingWebviewLayout.setVisibility(View.GONE);
                         }
                     }
 
@@ -175,6 +190,44 @@ public class MyLocationSetting extends AppCompatActivity {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             flag = true;
+        }
+    }
+
+    public void setSavedAddressData(){
+        try {
+            new AsyncTask<Void, UserLocationSetting, UserLocationSetting>() {
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                }
+
+                @Override
+                protected UserLocationSetting doInBackground(Void... voids) {
+                    return Connect2Server.getSavedAddress();
+                }
+
+                @Override
+                protected void onProgressUpdate(UserLocationSetting... values) {
+                    super.onProgressUpdate(values);
+                }
+
+                @Override
+                protected void onPostExecute(UserLocationSetting userLocationSetting) {
+                    super.onPostExecute(userLocationSetting);
+                    address.setText(userLocationSetting.getAddress());
+                    addressX.setText(userLocationSetting.getAddressX());
+                    addressY.setText(userLocationSetting.getAddressY());
+                    if(address.getText().toString() != null && !address.getText().toString().equals("")){
+                        //myCurrentLocationShowLayout.setVisibility(View.VISIBLE);
+                    }else{
+                        address.setText("설정된 주소가 없습니다.");
+                        addressX.setText("설정된 주소가 없습니다.");
+                        addressY.setText("설정된 주소가 없습니다.");
+                    }
+                }
+            }.execute();
+        }catch (Exception e){
+            Log.d("myerror", e.toString());
         }
     }
 }

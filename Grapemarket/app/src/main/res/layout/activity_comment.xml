@@ -5,8 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/colorBlack"
     tools:context=".CommentActivity">
-
+    <include layout="@layout/my_toolbar"/>
+    <include layout="@layout/my_progress_bar"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/comment_recycler"
         android:layout_width="match_parent"
@@ -19,12 +21,16 @@
 
         <EditText
             android:id="@+id/comment_input"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
+            android:inputType="textShortMessage"
+            android:text=""
+            android:hint="메세지 입력"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:backgroundTint="@color/colorWhite"/>
 
         <Button
             android:id="@+id/btnWriteCommentComplete"
@@ -32,7 +38,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="btnWriteCommentCompleteClicked"
-            android:text="Button" />
+            android:background="@drawable/button_background"
+            android:text="보내기"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"/>
     </LinearLayout>
 
 </LinearLayout>

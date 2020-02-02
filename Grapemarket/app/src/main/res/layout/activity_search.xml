@@ -5,28 +5,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/colorBlack"
     tools:context=".SearchActivity">
     <include layout="@layout/my_progress_bar"/>
+
+
+
     <Spinner
         android:id="@+id/search_category"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:entries="@array/search_category"/>
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog"
+        android:prompt="@string/search_category_title"
+        android:entries="@array/search_category"
+        />
 
-    <EditText
-        android:id="@+id/searchInput"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorWhite"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="검색어를 입력하세요."
-        android:inputType="textPersonName" />
+        android:orientation="horizontal">
 
-    <ImageButton
-        android:id="@+id/btnProductSearch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="btnProductSearchClicked"
-        app:srcCompat="@android:drawable/ic_search_category_default" />
+        <EditText
+            android:id="@+id/searchInput"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="검색어 입력"
+            android:backgroundTint="@color/colorWhite"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:inputType="text" />
+
+        <ImageButton
+            android:id="@+id/btnProductSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:onClick="btnProductSearchClicked"
+            app:srcCompat="@android:drawable/ic_search_category_default" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_list"

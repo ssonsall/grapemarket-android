@@ -6,103 +6,145 @@
     android:layout_height="match_parent"
     android:background="#000000"
     android:orientation="vertical"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity">
+
+    <!--    <include layout="@layout/my_toolbar"></include>-->
+
+    <include layout="@layout/my_progress_bar" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="150dp" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PODO MARKET"
+        android:text="THIS IS 502"
+        android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:textSize="50sp"
-        android:textStyle="bold" />
+        android:textSize="25dp" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="PODO MARKET"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="50dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PODO KNOWS YOUR DESTINATION"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="18dp" />
+
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="아이디"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/main_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#FFFFFF"
+            android:backgroundTint="#FFFFFF"
             android:ems="10"
-            android:hint="아이디를 입력하세요."
-            android:inputType="textPersonName" />
+            android:hint="아이디"
+            android:inputType="text"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="패스워드"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/main_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#FFFFFF"
+            android:backgroundTint="#FFFFFF"
             android:ems="10"
-            android:hint="비밀번호를 입력하세요."
-            android:inputType="textPersonName" />
+            android:hint="비밀번호"
+            android:inputType="textPassword"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF" />
 
     </LinearLayout>
+
+    <View
+        android:id="@+id/main_center_space"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:visibility="visible" />
+
+    <ProgressBar
+        android:id="@+id/main_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnJoin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#000000"
-            android:onClick="btnJoinClicked"
-            android:text="회원가입"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="#000000"
+            android:background="@drawable/button_background"
             android:onClick="btnLoginClicked"
             android:text="로그인"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnJoin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/button_background"
+            android:onClick="btnJoinClicked"
+            android:text="회원가입"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
     </LinearLayout>
 
     <Button
         android:id="@+id/btnTestLogin"
-        android:onClick="btnTestLoginClicked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#000000"
+        android:background="@drawable/button_background"
+        android:onClick="btnTestLoginClicked"
         android:text="테스트로그인"
         android:textColor="#FFFFFF" />
 </LinearLayout>

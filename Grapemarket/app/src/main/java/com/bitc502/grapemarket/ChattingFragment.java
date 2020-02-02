@@ -41,6 +41,7 @@ public class ChattingFragment extends Fragment {
         return v;
     }
 
+
     public void setChattingList(){
         new AsyncTask<Void,ChatList, ChatList>(){
             @Override
@@ -69,7 +70,7 @@ public class ChattingFragment extends Fragment {
 
                     chattingListBuy.setLayoutManager(linearLayoutManagerBuy);
 
-                    chattingListBuyAdapter = new ChattingBuyListAdapter();
+                    chattingListBuyAdapter = new ChattingBuyListAdapter(getContext());
                     chattingListBuyAdapter.setChatList(chatList);
 
                     chattingListBuy.setAdapter(chattingListBuyAdapter);
@@ -81,7 +82,7 @@ public class ChattingFragment extends Fragment {
 
                     chattingListSell.setLayoutManager(linearLayoutManagerSell);
 
-                    chattingListSellAdapter = new ChattingSellListAdapter();
+                    chattingListSellAdapter = new ChattingSellListAdapter(getContext());
                     chattingListSellAdapter.setChatList(chatList);
 
                     chattingListSell.setAdapter(chattingListSellAdapter);

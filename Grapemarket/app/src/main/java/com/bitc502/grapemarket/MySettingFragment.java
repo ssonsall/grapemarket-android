@@ -23,8 +23,8 @@ public class MySettingFragment extends Fragment {
     }
 
     //내 정보보기
-    public void btnMyInfoClicked(View v){
-        Intent intent = new Intent(mysettingContext,MyInfoActivity.class);
+    public void btnMyProfileClicked(View v){
+        Intent intent = new Intent(mysettingContext,MyProfileActivity.class);
         startActivity(intent);
     }
     //동네설정

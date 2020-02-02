@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitc502.grapemarket.R;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper=false)
 public class CommentHolder extends RecyclerView.ViewHolder {
 
-    private ImageView commentUserProfile;
+    private CircleImageView commentUserProfile;
     private TextView commentUsername;
     private TextView commentLocation;
     private TextView commentUpdateDate;

@@ -2,6 +2,7 @@ package com.bitc502.grapemarket.model;
 
 //RecyclerView 안에 들어갈 데이터
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class Board {
+public class Board implements Serializable {
     private int id; // 시퀀스
     private String title; // 제목
     private String content; // 내용

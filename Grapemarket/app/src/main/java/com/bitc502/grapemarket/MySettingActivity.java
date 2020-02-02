@@ -17,8 +17,8 @@ public class MySettingActivity extends AppCompatActivity {
     }
 
     //내 정보보기
-    public void btnMyInfoClicked(View v){
-        Intent intent = new Intent(mysettingContext,MyInfoActivity.class);
+    public void btnMyProfileClicked(View v){
+        Intent intent = new Intent(mysettingContext,MyProfileActivity.class);
         startActivity(intent);
     }
     //동네설정
@@ -39,4 +39,6 @@ public class MySettingActivity extends AppCompatActivity {
     public void btnLogoutClicked(View v){
 
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.bitc502.grapemarket.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class User {
+public class User implements Serializable {
 
     private int id; // 시퀀스
     private String username; // 사용자 아이디

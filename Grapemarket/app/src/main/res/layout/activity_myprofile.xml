@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    android:orientation="vertical"
+    tools:context=".MyProfileActivity">
+
+    <include layout="@layout/my_toolbar" />
+
+    <include layout="@layout/my_progress_bar" />
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/myprofile_proflie_photo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+        android:clickable="true"
+        android:onClick="btnChangeProfileImageClicked"
+        android:src="@android:drawable/btn_dialog" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorWhite" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="아이디"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/myprofile_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="닉네임"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/myprofile_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="30dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="이메일"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/myprofile_email"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="30dp"
+            android:inputType="text"
+            android:enabled="false"/>
+
+        <Button
+            android:id="@+id/btn_myprofile_change_email"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:gravity="right|center_vertical"
+            android:text="수정"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp"
+            android:onClick="btnChangeEmailClicked"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="전화번호"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/myprofile_phone"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="30dp"
+            android:inputType="text"
+            android:enabled="false"/>
+
+        <Button
+            android:id="@+id/btn_myprofile_change_phone"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:gravity="right|center_vertical"
+            android:text="수정"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp"
+            android:onClick="btnChangePhoneClicked"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="내 주소"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/myprofile_address"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="30dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="주소 인증 상태"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/myprofile_address_auth"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="30dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorWhite" />
+
+    <Button
+        android:id="@+id/btn_change_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:text="비밀번호 변경"
+        android:onClick="btnChangePassword"
+        android:textColor="@color/colorWhite" />
+
+    <Button
+        android:id="@+id/btn_save_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:text="저장"
+        android:onClick="btnChangeProfileCompleteClicked"
+        android:textColor="@color/colorWhite" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorWhite" />
+</LinearLayout>

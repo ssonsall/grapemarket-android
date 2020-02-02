@@ -4,61 +4,185 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBlack"
     android:orientation="vertical"
     tools:context=".MyLocationAuthActivity">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="등록된 위치" />
+    <include layout="@layout/my_toolbar" />
 
-    <TextView
-        android:id="@+id/savedAddress"
+    <LinearLayout
+        android:id="@+id/myCurrentLocationShowLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:orientation="vertical"
+        android:visibility="visible">
 
-    <TextView
-        android:id="@+id/savedAddressX"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        <TextView
+            android:id="@+id/nothing5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="설정한 주소"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp" />
 
-    <TextView
-        android:id="@+id/savedAddressY"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        <TextView
+            android:id="@+id/savedAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:paddingLeft="30dp"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:textSize="25dp" />
 
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="현재 위치" />
+        <TextView
+            android:id="@+id/nothing6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="설정한 주소 X좌표"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp" />
 
-    <TextView
-        android:id="@+id/currentAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        <TextView
+            android:id="@+id/savedAddressX"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:paddingLeft="30dp"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:textSize="25dp" />
 
-    <TextView
-        android:id="@+id/currentAddressX"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        <TextView
+            android:id="@+id/nothing7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="설정한 주소 Y좌표"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp" />
 
-    <TextView
-        android:id="@+id/currentAddressY"
+        <TextView
+            android:id="@+id/savedAddressY"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:paddingLeft="30dp"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:textSize="25dp" />
+
+
+        <LinearLayout
+            android:id="@+id/adressAuth_current_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/nothing8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="현재 위치 주소"
+                android:textColor="@color/colorWhite"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/currentAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:paddingLeft="30dp"
+                android:text=""
+                android:textColor="@color/colorWhite"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/nothing9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="현재 위치 X좌표"
+                android:textColor="@color/colorWhite"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/currentAddressX"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:paddingLeft="30dp"
+                android:text=""
+                android:textColor="@color/colorWhite"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/nothing33"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="현재 위치 Y좌표"
+                android:textColor="@color/colorWhite"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/currentAddressY"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:paddingLeft="30dp"
+                android:text=""
+                android:textColor="@color/colorWhite"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/nothing333"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="주소인증 성공여부"
+                android:textColor="@color/colorWhite"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/adressAuthResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:paddingLeft="30dp"
+                android:text=""
+                android:textColor="@color/colorWhite"
+                android:textSize="25dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="1dp"
+        android:background="@color/colorWhite" />
 
     <Button
         android:id="@+id/btnAddressAuth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
         android:onClick="btnAddressAuthClicked"
-        android:text="동네인증" />
+        android:text="동네인증"
+        android:visibility="visible"
+        android:enabled="true"
+        android:textColor="@color/colorWhite" />
+
+    <TextView
+        android:id="@+id/info_already_auth_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorWhite"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:text="이미 인증된 주소입니다."/>
 </LinearLayout>

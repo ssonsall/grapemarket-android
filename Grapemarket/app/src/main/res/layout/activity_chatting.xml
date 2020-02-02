@@ -8,22 +8,35 @@
         android:id="@+id/textView10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="구매" />
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp"
+        android:text="구매 채팅 목록" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorWhite"/>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatting_buy_list"
         android:layout_width="match_parent"
-        android:layout_height="338dp" />
+        android:layout_height="300dp" />
 
     <TextView
         android:id="@+id/textView12"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="판매" />
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp"
+        android:text="판매 채팅 목록" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorWhite"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatting_sell_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="300dp" />
 </LinearLayout>

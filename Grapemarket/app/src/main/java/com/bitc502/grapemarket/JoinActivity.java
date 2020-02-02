@@ -27,10 +27,12 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class JoinActivity extends AppCompatActivity {
 
-    private static final String[] PERMISSIONS_READ_STORAGE = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+    private final String[] PERMISSIONS_READ_STORAGE = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
     PermissionsChecker checker;
 
     private EditText username;
@@ -41,7 +43,7 @@ public class JoinActivity extends AppCompatActivity {
     private EditText phone;
     private String imagePath;
     private Context joinContext;
-    private ImageView showSelectedImageView;
+    private CircleImageView showSelectedImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

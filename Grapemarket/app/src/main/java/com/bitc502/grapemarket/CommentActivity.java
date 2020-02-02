@@ -1,13 +1,13 @@
 package com.bitc502.grapemarket;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,13 +25,18 @@ public class CommentActivity extends AppCompatActivity {
     private int boardId;
     private Button btnWriteCommentComplete;
     private EditText commentInput;
-
+    private ConstraintLayout progressBarLayout;
+    private View systemSoftKey;
+    final int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            |View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            |View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
         commentContext = getApplicationContext();
+        progressBarLayout = findViewById(R.id.progressBarLayout);
         recyclerViewComment = findViewById(R.id.comment_recycler);
         boardId = getIntent().getExtras().getInt("boardId");
         btnWriteCommentComplete = findViewById(R.id.btnWriteCommentComplete);
@@ -41,6 +46,13 @@ public class CommentActivity extends AppCompatActivity {
         recyclerViewComment.setLayoutManager(linearLayoutManagerComment);
         commentAdapter = new CommentAdapter();
         setCommentData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        systemSoftKey = getWindow().getDecorView();
+        systemSoftKey.setSystemUiVisibility(uiOptions);
     }
 
     public void btnWriteCommentCompleteClicked(View v){
@@ -64,6 +76,7 @@ public class CommentActivity extends AppCompatActivity {
             protected void onPostExecute(Boolean commentResult) {
                 super.onPostExecute(commentResult);
                 if(commentResult){
+                    commentInput.setText("");
                     setCommentData();
                 }else{
                     Toast.makeText(commentContext,"댓글 쓰기 실패",Toast.LENGTH_LONG).show();
@@ -79,6 +92,7 @@ public class CommentActivity extends AppCompatActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                progressBarLayout.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -97,6 +111,7 @@ public class CommentActivity extends AppCompatActivity {
                 //comment recycler view
                 commentAdapter.setCommentForDetails(boardForDetail.getComment());
                 recyclerViewComment.setAdapter(commentAdapter);
+                progressBarLayout.setVisibility(View.GONE);
             }
         }.execute();
     }

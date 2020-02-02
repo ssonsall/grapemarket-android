@@ -17,6 +17,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,8 +32,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class MyLocationAuthActivity extends AppCompatActivity {
-    private TextView savedAddress,savedAddressX,savedAddressY,currentAddress,currentAddressX,currentAddressY;
+    private TextView savedAddress,savedAddressX,savedAddressY,currentAddress,currentAddressX,currentAddressY,adressAuthResult,infoAlreadyAdressAuth;
     private Context locationAuthContext;
+    private LinearLayout addressAuthLayout;
+    private Button btnAuthAddress;
 
     //gps 관련
     private Gps gps;
@@ -49,59 +53,76 @@ public class MyLocationAuthActivity extends AppCompatActivity {
         currentAddress = findViewById(R.id.currentAddress);
         currentAddressX = findViewById(R.id.currentAddressX);
         currentAddressY = findViewById(R.id.currentAddressY);
+        adressAuthResult = findViewById(R.id.adressAuthResult);
         locationAuthContext = getApplicationContext();
+        btnAuthAddress = findViewById(R.id.btnAddressAuth);
+        addressAuthLayout = findViewById(R.id.adressAuth_current_layout);
+        infoAlreadyAdressAuth = findViewById(R.id.info_already_auth_address);
         setSavedAddressData();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     public void btnAddressAuthClicked(View V){
-        //현재 위치 가져오기
-        if (!checkLocationServicesStatus()) {
-            showDialogForLocationServiceSetting();
-        }else {
-            checkRunTimePermission();
-        }
+        if(savedAddress != null && !savedAddress.getText().toString().equals("설정된 주소가 없습니다.")) {
+            //현재 위치 가져오기
+            if (!checkLocationServicesStatus()) {
+                showDialogForLocationServiceSetting();
+            } else {
+                checkRunTimePermission();
+            }
 
-        gps = new Gps(locationAuthContext);
-        double addressX = gps.getLatitude();
-        double addressY = gps.getLongitude();
-        String address = getCurrentAddress(addressX,addressY);
-        //Toast.makeText(locationAuthContext,address,Toast.LENGTH_LONG).show();
-        currentAddress.setText(address);
-        currentAddressX.setText(addressX+"");
-        currentAddressY.setText(addressY+"");
-        Double xDiff = Math.abs(Double.parseDouble(currentAddressX.getText().toString())-Double.parseDouble(savedAddressX.getText().toString()));
-        Double yDiff = Math.abs(Double.parseDouble(currentAddressY.getText().toString())-Double.parseDouble(savedAddressY.getText().toString()));
+            gps = new Gps(locationAuthContext);
+            double addressX = gps.getLatitude();
+            double addressY = gps.getLongitude();
+            String address = getCurrentAddress(addressX, addressY);
+            //Toast.makeText(locationAuthContext,address,Toast.LENGTH_LONG).show();
+            currentAddress.setText(address);
+            currentAddressX.setText(addressX + "");
+            currentAddressY.setText(addressY + "");
+            Double xDiff = Math.abs(Double.parseDouble(currentAddressX.getText().toString()) - Double.parseDouble(savedAddressX.getText().toString()));
+            Double yDiff = Math.abs(Double.parseDouble(currentAddressY.getText().toString()) - Double.parseDouble(savedAddressY.getText().toString()));
 
-        if(Math.pow(xDiff,2) + Math.pow(yDiff,2) <= 0.0004){
-          new AsyncTask<Void,Boolean,Boolean>(){
-              @Override
-              protected void onPreExecute() {
-                  super.onPreExecute();
-              }
+            if (Math.pow(xDiff, 2) + Math.pow(yDiff, 2) <= 0.0004) {
+                new AsyncTask<Void, Boolean, Boolean>() {
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                    }
 
-              @Override
-              protected Boolean doInBackground(Void... voids) {
-                  return Connect2Server.saveAddressAuth();
-              }
+                    @Override
+                    protected Boolean doInBackground(Void... voids) {
+                        return Connect2Server.saveAddressAuth();
+                    }
 
-              @Override
-              protected void onProgressUpdate(Boolean... values) {
-                  super.onProgressUpdate(values);
-              }
+                    @Override
+                    protected void onProgressUpdate(Boolean... values) {
+                        super.onProgressUpdate(values);
+                    }
 
-              @Override
-              protected void onPostExecute(Boolean aBoolean) {
-                  super.onPostExecute(aBoolean);
-                  if(aBoolean){
-                      Toast.makeText(locationAuthContext,"주소인증에 성공했습니다.",Toast.LENGTH_LONG).show();
-                      Session.currentUserInfo.getUser().setAddressAuth(1);
-                  }else{
-                      Toast.makeText(locationAuthContext,"주소인증에 성공했지만, 서버에 반영하는데 실패했습니다.",Toast.LENGTH_LONG).show();
-                  }
-              }
-          }.execute();
+                    @Override
+                    protected void onPostExecute(Boolean aBoolean) {
+                        super.onPostExecute(aBoolean);
+                        if (aBoolean) {
+                            Toast.makeText(locationAuthContext, "주소인증에 성공했습니다.", Toast.LENGTH_LONG).show();
+                            Session.currentUserInfo.getUser().setAddressAuth(1);
+                            adressAuthResult.setText("주소인증 성공");
+
+                        } else {
+                            Toast.makeText(locationAuthContext, "주소인증에 성공했지만, 서버에 반영하는데 실패했습니다.", Toast.LENGTH_LONG).show();
+                            adressAuthResult.setText("주소인증 실패");
+                        }
+                    }
+                }.execute();
+            } else {
+                Toast.makeText(locationAuthContext, "주소인증에 실패했습니다.", Toast.LENGTH_LONG).show();
+                adressAuthResult.setText("주소인증 실패");
+            }
         }else{
-            Toast.makeText(locationAuthContext,"주소인증에 실패했습니다.",Toast.LENGTH_LONG).show();
+            Toast.makeText(locationAuthContext, "주소 설정을 먼저 해주세요.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -126,9 +147,25 @@ public class MyLocationAuthActivity extends AppCompatActivity {
                 @Override
                 protected void onPostExecute(UserLocationSetting userLocationSetting) {
                     super.onPostExecute(userLocationSetting);
+                    Log.d("myreload", "실행");
                     savedAddress.setText(userLocationSetting.getAddress());
                     savedAddressX.setText(userLocationSetting.getAddressX());
                     savedAddressY.setText(userLocationSetting.getAddressY());
+                    if(savedAddress.getText().toString() != null && !savedAddress.getText().toString().equals("")){
+                        //myCurrentLocationShowLayout.setVisibility(View.VISIBLE);
+                        if(userLocationSetting.getAddressAuth() == 1){
+                            addressAuthLayout.setVisibility(View.GONE);
+                            btnAuthAddress.setEnabled(false);
+                            btnAuthAddress.setVisibility(View.GONE);
+                            infoAlreadyAdressAuth.setVisibility(View.VISIBLE);
+                        }
+                    }else{
+                        savedAddress.setText("설정된 주소가 없습니다.");
+                        savedAddressX.setText("설정된 주소가 없습니다.");
+                        savedAddressY.setText("설정된 주소가 없습니다.");
+                        adressAuthResult.setText("");
+                    }
+
                 }
             }.execute();
         }catch (Exception e){

@@ -4,50 +4,121 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBlack"
     android:orientation="vertical"
     tools:context=".MyLocationSetting">
 
-    <TextView
-        android:id="@+id/myLocationSetAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:text="TextView" />
+    <include layout="@layout/my_toolbar" />
 
-    <TextView
-        android:id="@+id/myLocationSetLatitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:text="TextView" />
+    <LinearLayout
+        android:id="@+id/locationSettingWebviewLayout"
+        android:layout_width="473dp"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-    <TextView
-        android:id="@+id/myLocationSetLongitude"
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"></WebView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/myCurrentLocationShowLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="false"
-        android:text="TextView" />
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/nothing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="설정한 주소"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/myLocationSetAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:paddingLeft="30dp"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:textSize="25dp" />
+
+        <TextView
+            android:id="@+id/nothing2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="설정한 주소 X좌표"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/myLocationSetLatitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:paddingLeft="30dp"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:textSize="25dp" />
+
+        <TextView
+            android:id="@+id/nothing3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="설정한 주소 Y좌표"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/myLocationSetLongitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:paddingLeft="30dp"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:textSize="25dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorWhite" />
 
     <Button
         android:id="@+id/btnAddressSetting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
         android:onClick="btnAddressSettingClicked"
-        android:text="동네설정" />
+        android:text="동네설정하기"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnAddressSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
         android:onClick="btnAddressSaveClicked"
-        android:text="저장" />
+        android:text="저장하기"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold" />
 
-    <WebView
-        android:id="@+id/webView"
-        android:layout_width="473dp"
-        android:layout_height="596dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="center"></WebView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorWhite" />
+
 
 </LinearLayout>

@@ -5,29 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MyInfoActivity">
+    android:background="@color/colorBlack"
+    tools:context=".MySettingActivity">
 
     <TextView
         android:id="@+id/btnMyInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:onClick="btnMyInfoClicked"
-        android:text="내 정보" />
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp"
+        android:onClick="btnMyProfileClicked"
+        android:text="프로필 보기" />
 
     <TextView
         android:id="@+id/btnLocationSet"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:clickable="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp"
         android:onClick="btnLocationSetClicked"
-        android:text="동네설정" />
+        android:text="내 동네설정" />
 
     <TextView
         android:id="@+id/btnLocationAuth"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:clickable="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp"
         android:onClick="btnLocationAuthClicked"
         android:text="동네인증" />
 
@@ -36,6 +43,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp"
         android:onClick="btnMyTradeLogClicked"
         android:text="거래내역" />
 
@@ -44,6 +53,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp"
         android:onClick="btnLogoutClicked"
         android:text="로그아웃" />
 </LinearLayout>

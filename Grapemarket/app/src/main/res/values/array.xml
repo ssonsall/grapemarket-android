@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="write_category">
-        <item>카테고리</item>
         <item>디지털/가전</item>
         <item>가구/인테리어</item>
         <item>유아동/유아도서</item>
@@ -19,7 +18,6 @@
     </string-array>
 
     <string-array name="search_category">
-        <item>카테고리</item>
         <item>전체</item>
         <item>인기매물</item>
         <item>디지털/가전</item>

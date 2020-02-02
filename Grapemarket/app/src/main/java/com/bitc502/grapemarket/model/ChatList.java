@@ -1,5 +1,6 @@
 package com.bitc502.grapemarket.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class ChatList {
+public class ChatList implements Serializable {
     List<Chat> chatForBuy = new ArrayList<>();
     List<Chat> chatForSell = new ArrayList<>();
 }

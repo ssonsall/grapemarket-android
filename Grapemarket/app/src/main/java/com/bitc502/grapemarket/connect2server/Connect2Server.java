@@ -7,20 +7,17 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
-
-import com.bitc502.grapemarket.BuildConfig;
-import com.bitc502.grapemarket.R;
 import com.bitc502.grapemarket.currentuserinfo.Session;
 import com.bitc502.grapemarket.model.Board;
 import com.bitc502.grapemarket.model.BoardForDetail;
 import com.bitc502.grapemarket.model.BoardForList;
 import com.bitc502.grapemarket.model.ChatList;
 import com.bitc502.grapemarket.model.CommentForDetail;
-import com.bitc502.grapemarket.model.CurrentUserInfo;
+import com.bitc502.grapemarket.model.CurrentUserInfoForProfile;
+import com.bitc502.grapemarket.model.User;
 import com.bitc502.grapemarket.model.UserLocationSetting;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.bitc502.grapemarket.model.User;
 
 import java.io.File;
 import java.io.InputStream;
@@ -45,6 +42,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.TlsVersion;
 
+
 public class Connect2Server {
     private static String ip_address = "https://192.168.43.40:8443";
     private static final String LOGIN = ip_address + "/user/loginProc";
@@ -59,6 +57,11 @@ public class Connect2Server {
     private static final String SAVE_ADDRESS_AUTH = ip_address + "/android/saveAddressAuth";
     private static final String SEARCH = ip_address + "/android/search";
     private static final String CHAT_LIST = ip_address + "/android/chatList";
+    private static final String CURRENT_MY_PROFILE = ip_address + "/android/currentmyinfo";
+    private static final String CHANGE_PASSWORD = ip_address + "/android/changepassword";
+    private static final String CHANGE_PROFILE = ip_address + "/android/changeprofile";
+    private static final String DELETE_BOARD = ip_address + "/android/deleteBoard/";
+    private static final String MODIFY_BOARD = ip_address + "/android/modifyBoard";
 
     //Login
     public static Boolean sendLoginInfoToServer(String username, String password) {
@@ -197,6 +200,12 @@ public class Connect2Server {
             boardForDetail.setTitle(board.getTitle());
             boardForDetail.setState(board.getState());
 
+            boardForDetail.setCurrentImage1(board.getImage1());
+            boardForDetail.setCurrentImage2(board.getImage2());
+            boardForDetail.setCurrentImage3(board.getImage3());
+            boardForDetail.setCurrentImage4(board.getImage4());
+            boardForDetail.setCurrentImage5(board.getImage5());
+
             //이미지 세팅(작성자 프로필 사진 및 상품 이미지)
             //이미지 땡겨오기 위한 HttpURLConnection
             Bitmap bitmap = null;
@@ -211,10 +220,8 @@ public class Connect2Server {
                     OkHttpClient clientForImage = getUnsafeOkHttpClient();
                     Response responseForImage = clientForImage.newCall(requestForImage).execute();
                     InputStream inputStream = responseForImage.body().byteStream();
-                    Log.d("ttt111", inputStream.toString());
                     bitmap = BitmapFactory.decodeStream(inputStream);
                     boardForDetail.setUserProfile(bitmap);
-
                 }
 
                 if (i == 0) {
@@ -352,7 +359,6 @@ public class Connect2Server {
             //////
             List<BoardForList> boardForLists = new ArrayList<>();
             for (int i = 0; i < boards.size(); i++) {
-                //boardList.add(new Board(R.mipmap.ic_launcher,"제목","위치","유저네임","가격"));
                 BoardForList boardForList = new BoardForList();
                 boardForList.setAddressRange(boards.get(i).getAddressRange());
                 boardForList.setCategory(boards.get(i).getCategory());
@@ -467,6 +473,7 @@ public class Connect2Server {
                     fileName5 = imagePathList.get(i).substring(imagePathList.get(i).lastIndexOf("/") + 1);
                 }
             }
+
             /*
              * 사용자가 사진을 1개만 선택했다면 나머지 4개는
              * null 파일(size가 0인 파일)이라도 넘겨야 되는데
@@ -667,6 +674,7 @@ public class Connect2Server {
         }
     }
 
+    //검색
     public static List<BoardForList> search(String categoryString, String userInput) {
         try {
             int category = 0;
@@ -772,8 +780,9 @@ public class Connect2Server {
         }
     }
 
-    public static ChatList getChatList(){
-        try{
+    //채팅리스트 가져오기
+    public static ChatList getChatList() {
+        try {
             Request request = new Request.Builder()
                     .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
                     .url(CHAT_LIST)
@@ -783,11 +792,386 @@ public class Connect2Server {
             OkHttpClient client = getUnsafeOkHttpClient();
             Response response = client.newCall(request).execute();
             String res = response.body().string();
-            ChatList chatList = new Gson().fromJson(res,ChatList.class);
+            ChatList chatList = new Gson().fromJson(res, ChatList.class);
             return chatList;
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d("mychatlist", e.toString());
             return null;
+        }
+    }
+
+    //현재 프로필 정보 가져오기
+    public static CurrentUserInfoForProfile getCurrentProfileInfo() {
+        try {
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(CURRENT_MY_PROFILE)
+                    .get()
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            CurrentUserInfoForProfile user = new Gson().fromJson(res, CurrentUserInfoForProfile.class);
+
+            //UserProfileImage가져오기
+            Bitmap bitmap = null;
+            try {
+                //OKHTTP3
+                Request requestForImage = new Request.Builder()
+                        .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                        .url("https://192.168.43.40:8443/upload/" + user.getUserProfile())
+                        .get()
+                        .build();
+                OkHttpClient clientForImage = getUnsafeOkHttpClient();
+                Response responseForImage = clientForImage.newCall(requestForImage).execute();
+                InputStream inputStream = responseForImage.body().byteStream();
+                Log.d("ttt111", inputStream.toString());
+                bitmap = BitmapFactory.decodeStream(inputStream);
+                user.setUserProfilePhoto(bitmap);
+            } catch (Exception e) {
+                Log.d("searcht", e.toString());
+            }
+
+            return user;
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return null;
+        }
+    }
+
+    public static Boolean changePassword(String newPassword) {
+        try {
+            //OKHTTP3
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("newPassword", newPassword)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(CHANGE_PASSWORD)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            if (res.equals("success")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return false;
+        }
+    }
+
+    //프로필 업데이트
+    public static Boolean updateProfile(User user) {
+        try {
+            //OKHTTP3
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("user", new Gson().toJson(user))
+                    .build();
+
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(CHANGE_PROFILE)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            if (res.equals("success")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return false;
+        }
+    }
+
+    //게시글 수정
+    public static Boolean modifyBoard(Integer boardId, List<String> imagePathList, String categoryString, String title, String price, String content,
+                                      String currentImage1,String currentImage2,String currentImage3,String currentImage4,String currentImage5) {
+        try {
+            if(TextUtils.isEmpty(currentImage1)){
+                currentImage1="";
+            }
+            if(TextUtils.isEmpty(currentImage2)){
+                currentImage2="";
+            }
+            if(TextUtils.isEmpty(currentImage3)){
+                currentImage3="";
+            }
+            if(TextUtils.isEmpty(currentImage4)){
+                currentImage4="";
+            }
+            if(TextUtils.isEmpty(currentImage5)){
+                currentImage5="";
+            }
+
+            int category = 0;
+            //카테고리 정보 숫자로 세팅
+            if (categoryString.equals("디지털/가전")) {
+                category = 3;
+            } else if (categoryString.equals("가구/인테리어")) {
+                category = 4;
+            } else if (categoryString.equals("유아동/유아도서")) {
+                category = 5;
+            } else if (categoryString.equals("생활/가공식품")) {
+                category = 6;
+            } else if (categoryString.equals("여성의류")) {
+                category = 7;
+            } else if (categoryString.equals("여성잡화")) {
+                category = 8;
+            } else if (categoryString.equals("뷰티/미용")) {
+                category = 9;
+            } else if (categoryString.equals("남성패션/잡화")) {
+                category = 10;
+            } else if (categoryString.equals("스포츠/레저")) {
+                category = 11;
+            } else if (categoryString.equals("게임/취미")) {
+                category = 12;
+            } else if (categoryString.equals("도서/티켓/음반")) {
+                category = 13;
+            } else if (categoryString.equals("반려동물용품")) {
+                category = 14;
+            } else if (categoryString.equals("기타 중고물품")) {
+                category = 15;
+            } else if (categoryString.equals("삽니다")) {
+                category = 16;
+            }
+
+            final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/*");
+
+            File sourceFile1 = null;
+            File sourceFile2 = null;
+            File sourceFile3 = null;
+            File sourceFile4 = null;
+            File sourceFile5 = null;
+
+            String fileName1 = "";
+            String fileName2 = "";
+            String fileName3 = "";
+            String fileName4 = "";
+            String fileName5 = "";
+
+            Log.d("mywrite", imagePathList.size() + "");
+
+            int imagePathListSize = imagePathList.size();
+            for (int i = 0; i < imagePathListSize; i++) {
+                if (i == 0) {
+                    sourceFile1 = new File(imagePathList.get(i));
+                    fileName1 = imagePathList.get(i).substring(imagePathList.get(i).lastIndexOf("/") + 1);
+                } else if (i == 1) {
+                    sourceFile2 = new File(imagePathList.get(i));
+                    fileName2 = imagePathList.get(i).substring(imagePathList.get(i).lastIndexOf("/") + 1);
+                } else if (i == 2) {
+                    sourceFile3 = new File(imagePathList.get(i));
+                    fileName3 = imagePathList.get(i).substring(imagePathList.get(i).lastIndexOf("/") + 1);
+                } else if (i == 3) {
+                    sourceFile4 = new File(imagePathList.get(i));
+                    fileName4 = imagePathList.get(i).substring(imagePathList.get(i).lastIndexOf("/") + 1);
+                } else if (i == 4) {
+                    sourceFile5 = new File(imagePathList.get(i));
+                    fileName5 = imagePathList.get(i).substring(imagePathList.get(i).lastIndexOf("/") + 1);
+                }
+            }
+
+            /*
+             * 사용자가 사진을 1개만 선택했다면 나머지 4개는
+             * null 파일(size가 0인 파일)이라도 넘겨야 되는데
+             * sourceFile1 = new File("") 이런 식으로 처리하면 FileNotFound Exception에 걸리고
+             * sourceFile1 = null 이렇게 넘기면 NullPoint Exception에 걸림
+             * 그래서 그냥 더미 파일(사이즈 0)을 생성해서 일단 넘기고
+             * 데이터 전송과 결과받기가 끝나면 만들었던 더미 파일을 삭제하는 식으로 구현함.
+             */
+
+            //사진이 5개 미만일 경우 dummy 파일 생성 (0개인 경우는 아예 이쪽으로 오지 못하게 해야함)
+            for (int i = 0; i < 5; i++) {
+                if (imagePathListSize == 1) {
+                    sourceFile2 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy2.podo");
+                    sourceFile2.createNewFile();
+                    sourceFile3 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy3.podo");
+                    sourceFile3.createNewFile();
+                    sourceFile4 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy4.podo");
+                    sourceFile4.createNewFile();
+                    sourceFile5 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy5.podo");
+                    sourceFile5.createNewFile();
+                } else if (imagePathListSize == 2) {
+                    sourceFile3 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy3.podo");
+                    sourceFile3.createNewFile();
+                    sourceFile4 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy4.podo");
+                    sourceFile4.createNewFile();
+                    sourceFile5 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy5.podo");
+                    sourceFile5.createNewFile();
+                } else if (imagePathListSize == 3) {
+                    sourceFile4 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy4.podo");
+                    sourceFile4.createNewFile();
+                    sourceFile5 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy5.podo");
+                    sourceFile5.createNewFile();
+                } else if (imagePathListSize == 4) {
+                    sourceFile5 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy5.podo");
+                    sourceFile5.createNewFile();
+                }
+            }
+
+            //위에서는 imagepathList가 아예 널인거 찾아서 즉 아예 선택안한거 찾아서 더미만들고
+            //그 후에 이미지는 있는데 그게 기존 이미지라서 그냥 이미지패쓰가 내가 지정한 previousImage인거 찾아서
+            //더미로 만들어서 넘김
+
+            for (int i = 0; i < imagePathListSize; i++) {
+                if (i == 0) {
+                    if (imagePathList.get(0).equals("previousImage")) {
+                        sourceFile1 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy1.podo");
+                        sourceFile1.createNewFile();
+                    }
+                }
+                if (i == 1) {
+                    if (imagePathList.get(1).equals("previousImage")) {
+                        sourceFile2 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy2.podo");
+                        sourceFile2.createNewFile();
+                    }
+                }
+                if (i == 2) {
+                    if (imagePathList.get(2).equals("previousImage")) {
+                        sourceFile3 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy3.podo");
+                        sourceFile3.createNewFile();
+                    }
+                }
+                if (i == 3) {
+                    if (imagePathList.get(3).equals("previousImage")) {
+                        sourceFile4 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy4.podo");
+                        sourceFile4.createNewFile();
+                    }
+                }
+                if (i == 4) {
+                    if (imagePathList.get(4).equals("previousImage")) {
+                        sourceFile5 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "dummy5.podo");
+                        sourceFile5.createNewFile();
+                    }
+                }
+            }
+
+
+            //OKHTTP3
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("productImage1", fileName1, RequestBody.create(MEDIA_TYPE_PNG, sourceFile1))
+                    .addFormDataPart("productImage2", fileName2, RequestBody.create(MEDIA_TYPE_PNG, sourceFile2))
+                    .addFormDataPart("productImage3", fileName3, RequestBody.create(MEDIA_TYPE_PNG, sourceFile3))
+                    .addFormDataPart("productImage4", fileName4, RequestBody.create(MEDIA_TYPE_PNG, sourceFile4))
+                    .addFormDataPart("productImage5", fileName5, RequestBody.create(MEDIA_TYPE_PNG, sourceFile5))
+                    .addFormDataPart("currentImage1",currentImage1)
+                    .addFormDataPart("currentImage2",currentImage2)
+                    .addFormDataPart("currentImage3",currentImage3)
+                    .addFormDataPart("currentImage4",currentImage4)
+                    .addFormDataPart("currentImage5",currentImage5)
+                    .addFormDataPart("category", category + "")
+                    .addFormDataPart("state", "0")
+                    .addFormDataPart("title", title)
+                    .addFormDataPart("price", price)
+                    .addFormDataPart("content", content)
+                    .addFormDataPart("boardId", boardId.toString())
+                    .build();
+
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(MODIFY_BOARD)
+                    .post(requestBody)
+                    .build();
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+
+            //dummy 파일 삭제
+            for (int i = 0; i < 5; i++) {
+                if (imagePathListSize == 1) {
+                    sourceFile2.delete();
+                    sourceFile3.delete();
+                    sourceFile4.delete();
+                    sourceFile5.delete();
+                } else if (imagePathListSize == 2) {
+                    sourceFile3.delete();
+                    sourceFile4.delete();
+                    sourceFile5.delete();
+                } else if (imagePathListSize == 3) {
+                    sourceFile4.delete();
+                    sourceFile5.delete();
+                } else if (imagePathListSize == 4) {
+                    sourceFile5.delete();
+                }
+            }
+
+            //dummy delete
+            for (int i = 0; i < imagePathListSize; i++) {
+                if (i == 0) {
+                    if (imagePathList.get(0).equals("previousImage")) {
+                        sourceFile1.delete();
+                    }
+                }
+                if (i == 1) {
+                    if (imagePathList.get(1).equals("previousImage")) {
+                        sourceFile2.delete();
+                    }
+                }
+                if (i == 2) {
+                    if (imagePathList.get(2).equals("previousImage")) {
+                        sourceFile3.delete();
+                    }
+                }
+                if (i == 3) {
+                    if (imagePathList.get(3).equals("previousImage")) {
+                        sourceFile4.delete();
+                    }
+                }
+                if (i == 4) {
+                    if (imagePathList.get(4).equals("previousImage")) {
+                        sourceFile5.delete();
+                    }
+                }
+            }
+
+
+            if (res.equals("success")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            Log.d("modifyt", e.toString());
+            return false;
+        }
+    }
+
+    //게시글 삭제
+    public static Boolean deleteBoard(int boardId) {
+        try {
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(DELETE_BOARD + boardId)
+                    .get()
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            if (res.equals("success")) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return false;
         }
     }
 
@@ -857,6 +1241,4 @@ public class Connect2Server {
         Log.d("jsessiontest", "파싱한 >> " + jSessionId);
         return jSessionId;
     }
-
-
 }

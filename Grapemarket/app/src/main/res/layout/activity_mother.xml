@@ -7,17 +7,20 @@
     android:orientation="vertical"
     tools:context=".MainActivity" >
     <!-- 각각의 Fragment를 넣을 Container -->
-
+    <include layout="@layout/my_toolbar"/>
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
-        android:layout_height="680dp">
+        android:layout_height="719dp"
+        android:background="#000000"/>
 
-    </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        app:itemIconTint="#FFFFFF"
+        android:background="#000000"
+        app:itemTextColor="#FFFFFF"
         app:menu="@menu/bottom_menu" />
 </LinearLayout>

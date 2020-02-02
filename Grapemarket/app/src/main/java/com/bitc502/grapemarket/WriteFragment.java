@@ -2,7 +2,7 @@ package com.bitc502.grapemarket;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
@@ -19,7 +19,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -38,21 +40,38 @@ public class WriteFragment extends Fragment {
     private static final String[] PERMISSIONS_WRITE_STORAGE = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private PermissionsChecker checker;
     private boolean permissionRead, permissionWrite;
-    private ImageView selectedImage1,selectedImage2,selectedImage3,selectedImage4,selectedImage5 ;
-    private EditText write_title,write_price,write_content;
+    private ImageView selectedImage1, selectedImage2, selectedImage3, selectedImage4, selectedImage5;
+    private EditText write_title, write_price, write_content;
     private List<String> imagePathList;
     private Context writeContext;
+    private ConstraintLayout progressBar;
     private Spinner write_category;
     private String category;
+    private ArrayAdapter spinnerAdpater;
+    private FrameLayout frameLayoutImg1, frameLayoutImg2, frameLayoutImg3, frameLayoutImg4, frameLayoutImg5;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       View v = inflater.inflate(R.layout.activity_write, container, false);
+        View v = inflater.inflate(R.layout.activity_write, container, false);
 
         writeContext = getContext();
+
         checker = new PermissionsChecker(writeContext);
         permissionRead = false;
         permissionWrite = false;
+
+        progressBar = v.findViewById(R.id.progressBarLayout);
+        frameLayoutImg1 = v.findViewById(R.id.write_selectedImg1_layout);
+        frameLayoutImg1.setVisibility(View.INVISIBLE);
+        frameLayoutImg2 = v.findViewById(R.id.write_selectedImg2_layout);
+        frameLayoutImg2.setVisibility(View.INVISIBLE);
+        frameLayoutImg3 = v.findViewById(R.id.write_selectedImg3_layout);
+        frameLayoutImg3.setVisibility(View.INVISIBLE);
+        frameLayoutImg4 = v.findViewById(R.id.write_selectedImg4_layout);
+        frameLayoutImg4.setVisibility(View.INVISIBLE);
+        frameLayoutImg5 = v.findViewById(R.id.write_selectedImg5_layout);
+        frameLayoutImg5.setVisibility(View.INVISIBLE);
 
         selectedImage1 = v.findViewById(R.id.wirte_selectedImg1);
         selectedImage2 = v.findViewById(R.id.wirte_selectedImg2);
@@ -73,44 +92,118 @@ public class WriteFragment extends Fragment {
         write_price = v.findViewById(R.id.write_price);
         write_content = v.findViewById(R.id.write_content);
 
+        spinnerAdpater = ArrayAdapter.createFromResource(getContext(), R.array.write_category, R.layout.spinner_dialog_layout);
+        spinnerAdpater.setDropDownViewResource(R.layout.spinner_text_setting);
+        write_category.setAdapter(spinnerAdpater);
+
 
         write_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                category = (String)adapterView.getItemAtPosition(i);
+                category = (String) adapterView.getItemAtPosition(i);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
-        
+
         return v;
     }
 
-    public void btnWriteSelectImageClicked(View v){
-        imagePathList.clear();
-        selectedImage1.setVisibility(View.INVISIBLE);
-        selectedImage2.setVisibility(View.INVISIBLE);
-        selectedImage3.setVisibility(View.INVISIBLE);
-        selectedImage4.setVisibility(View.INVISIBLE);
-        selectedImage5.setVisibility(View.INVISIBLE);
+    public void btnImgDelete1(View v) {
+        //imagePathList 하나씩 땡기기 (remove 하면 자동으로 인덱스 정렬되나? 되면 꿀이고 안되면 개고생)
+        //imageView 세팅 다시하기 그냥 하나씩 땡기는 거임
+        if (imagePathList.size() == 2) {
+            Picasso.with(writeContext).load(new File(imagePathList.get(1))).into(selectedImage1);
+            frameLayoutImg2.setVisibility(View.INVISIBLE);
+        } else if (imagePathList.size() == 3) {
+            Picasso.with(writeContext).load(new File(imagePathList.get(1))).into(selectedImage1);
+            Picasso.with(writeContext).load(new File(imagePathList.get(2))).into(selectedImage2);
+            frameLayoutImg3.setVisibility(View.INVISIBLE);
+        } else if (imagePathList.size() == 4) {
+            Picasso.with(writeContext).load(new File(imagePathList.get(1))).into(selectedImage1);
+            Picasso.with(writeContext).load(new File(imagePathList.get(2))).into(selectedImage2);
+            Picasso.with(writeContext).load(new File(imagePathList.get(3))).into(selectedImage3);
+            frameLayoutImg4.setVisibility(View.INVISIBLE);
+        } else if (imagePathList.size() == 5) {
+            Picasso.with(writeContext).load(new File(imagePathList.get(1))).into(selectedImage1);
+            Picasso.with(writeContext).load(new File(imagePathList.get(2))).into(selectedImage2);
+            Picasso.with(writeContext).load(new File(imagePathList.get(3))).into(selectedImage3);
+            Picasso.with(writeContext).load(new File(imagePathList.get(4))).into(selectedImage4);
+            frameLayoutImg5.setVisibility(View.INVISIBLE);
+        } else if (imagePathList.size() == 1) {
+            frameLayoutImg1.setVisibility(View.INVISIBLE);
+        }
+        imagePathList.remove(0);
+    }
 
+    public void btnImgDelete2(View v) {
+        if (imagePathList.size() == 3) {
+            Picasso.with(writeContext).load(new File(imagePathList.get(2))).into(selectedImage2);
+            frameLayoutImg3.setVisibility(View.INVISIBLE);
+        } else if (imagePathList.size() == 4) {
+            Picasso.with(writeContext).load(new File(imagePathList.get(2))).into(selectedImage2);
+            Picasso.with(writeContext).load(new File(imagePathList.get(3))).into(selectedImage3);
+            frameLayoutImg4.setVisibility(View.INVISIBLE);
+        } else if (imagePathList.size() == 5) {
+            Picasso.with(writeContext).load(new File(imagePathList.get(2))).into(selectedImage2);
+            Picasso.with(writeContext).load(new File(imagePathList.get(3))).into(selectedImage3);
+            Picasso.with(writeContext).load(new File(imagePathList.get(4))).into(selectedImage4);
+            frameLayoutImg5.setVisibility(View.INVISIBLE);
+        } else if (imagePathList.size() == 2) {
+            frameLayoutImg2.setVisibility(View.INVISIBLE);
+        }
+        imagePathList.remove(1);
+    }
+
+    public void btnImgDelete3(View v) {
+        if (imagePathList.size() == 4) {
+            Picasso.with(writeContext).load(new File(imagePathList.get(3))).into(selectedImage3);
+            frameLayoutImg4.setVisibility(View.INVISIBLE);
+        } else if (imagePathList.size() == 5) {
+            Picasso.with(writeContext).load(new File(imagePathList.get(3))).into(selectedImage3);
+            Picasso.with(writeContext).load(new File(imagePathList.get(4))).into(selectedImage4);
+            frameLayoutImg5.setVisibility(View.INVISIBLE);
+        } else if (imagePathList.size() == 3) {
+            frameLayoutImg3.setVisibility(View.INVISIBLE);
+        }
+        imagePathList.remove(2);
+    }
+
+    public void btnImgDelete4(View v) {
+        //Picasso.with(writeContext).load(new File(imagePathList.get(i))).into(selectedImage1);
+        if (imagePathList.size() == 5) {
+            Picasso.with(writeContext).load(new File(imagePathList.get(4))).into(selectedImage4);
+            frameLayoutImg5.setVisibility(View.INVISIBLE);
+        } else if (imagePathList.size() == 4) {
+            frameLayoutImg4.setVisibility(View.INVISIBLE);
+        }
+        imagePathList.remove(3);
+    }
+
+    public void btnImgDelete5(View v) {
+        imagePathList.remove(4);
+        frameLayoutImg5.setVisibility(View.INVISIBLE);
+    }
+
+    public void btnWriteSelectImageClicked(View v) {
         if (checker.lacksPermissions(PERMISSIONS_READ_STORAGE)) {
             startPermissionsActivity(PERMISSIONS_READ_STORAGE);
             permissionRead = true;
-        }else{
+        } else {
             permissionRead = true;
         }
 
         if (checker.lacksPermissions(PERMISSIONS_WRITE_STORAGE)) {
             startPermissionsActivity(PERMISSIONS_WRITE_STORAGE);
             permissionWrite = true;
-        }else{
+        } else {
             permissionWrite = true;
         }
 
-        if(permissionRead&&permissionWrite) {
+        if (permissionRead && permissionWrite) {
             getImageFromUserDevice();
         }
     }
@@ -140,12 +233,14 @@ public class WriteFragment extends Fragment {
                     return;
                 }
                 ClipData clipData = data.getClipData();
-                if(clipData.getItemCount() > 5){
-                    Toast.makeText(writeContext,"사진은 5장까지만 선택해주세요.",Toast.LENGTH_LONG).show();
-                }else{
+                int userSelectedImageCount = clipData.getItemCount();
+                if (userSelectedImageCount > 5) {
+                    Toast.makeText(writeContext, "사진은 5장까지만 선택해주세요.", Toast.LENGTH_LONG).show();
+                } else if (userSelectedImageCount + imagePathList.size() > 5) {
+                    Toast.makeText(writeContext, "사진은 5장까지만 선택해주세요.", Toast.LENGTH_LONG).show();
+                } else {
                     List<Uri> imageUriList = new ArrayList<>();
-                    int selectedImageCount = clipData.getItemCount();
-                    for(int i = 0 ; i < selectedImageCount; i++){
+                    for (int i = 0; i < userSelectedImageCount; i++) {
                         imageUriList.add(clipData.getItemAt(i).getUri());
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         Cursor cursor = getActivity().getContentResolver().query(imageUriList.get(i), filePathColumn, null, null, null);
@@ -153,49 +248,61 @@ public class WriteFragment extends Fragment {
                             cursor.moveToFirst();
                             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                             imagePathList.add(cursor.getString(columnIndex));
-                            if(i == 0){
-                                Picasso.with(writeContext).load(new File(imagePathList.get(i))).into(selectedImage1);
-                                cursor.close();
-                                selectedImage1.setVisibility(View.VISIBLE);
-                            }else if(i == 1){
-                                Picasso.with(writeContext).load(new File(imagePathList.get(i))).into(selectedImage2);
-                                cursor.close();
-                                selectedImage2.setVisibility(View.VISIBLE);
-                            }else if(i == 2){
-                                Picasso.with(writeContext).load(new File(imagePathList.get(i))).into(selectedImage3);
-                                cursor.close();
-                                selectedImage3.setVisibility(View.VISIBLE);
-                            }else if(i == 3){
-                                Picasso.with(writeContext).load(new File(imagePathList.get(i))).into(selectedImage4);
-                                cursor.close();
-                                selectedImage4.setVisibility(View.VISIBLE);
-                            }else if(i == 4){
-                                Picasso.with(writeContext).load(new File(imagePathList.get(i))).into(selectedImage5);
-                                cursor.close();
-                                selectedImage5.setVisibility(View.VISIBLE);
-                            }
-                        } else {
+                            cursor.close();
+                        }
+                    }
 
+                    for(int i = 0 ; i < imagePathList.size(); i++){
+                        if (selectedImage1.getVisibility() != View.VISIBLE) {
+                            //image1에
+                            Picasso.with(writeContext).load(new File(imagePathList.get(0))).into(selectedImage1);
+                            selectedImage1.setVisibility(View.VISIBLE);
+                            frameLayoutImg1.setVisibility(View.VISIBLE);
+                        }
+                        if (selectedImage2.getVisibility() != View.VISIBLE) {
+                            //image2에
+                            Picasso.with(writeContext).load(new File(imagePathList.get(1))).into(selectedImage2);
+                            selectedImage2.setVisibility(View.VISIBLE);
+                            frameLayoutImg2.setVisibility(View.VISIBLE);
+                        }
+                        if (selectedImage3.getVisibility() != View.VISIBLE) {
+                            //image3에
+                            Picasso.with(writeContext).load(new File(imagePathList.get(2))).into(selectedImage3);
+                            selectedImage3.setVisibility(View.VISIBLE);
+                            frameLayoutImg3.setVisibility(View.VISIBLE);
+                        }
+                        if (selectedImage4.getVisibility() != View.VISIBLE) {
+                            //image4에
+                            Picasso.with(writeContext).load(new File(imagePathList.get(3))).into(selectedImage4);
+                            selectedImage4.setVisibility(View.VISIBLE);
+                            frameLayoutImg4.setVisibility(View.VISIBLE);
+                        }
+                        if (selectedImage5.getVisibility() != View.VISIBLE) {
+                            //image5에
+                            Picasso.with(writeContext).load(new File(imagePathList.get(4))).into(selectedImage5);
+                            selectedImage5.setVisibility(View.VISIBLE);
+                            frameLayoutImg5.setVisibility(View.VISIBLE);
                         }
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.d("myerror", e.toString());
             }
 
         }
     }
 
-    public void btnWriteComplete(View v){
-        new AsyncTask<Void,Integer,Integer>(){
+    public void btnWriteComplete(View v) {
+        new AsyncTask<Void, Integer, Integer>() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
             protected Integer doInBackground(Void... voids) {
-                return Connect2Server.sendWriteInfoToServer(imagePathList,category,write_title.getText().toString(),write_price.getText().toString(),write_content.getText().toString());
+                return Connect2Server.sendWriteInfoToServer(imagePathList, category, write_title.getText().toString(), write_price.getText().toString(), write_content.getText().toString());
             }
 
             @Override
@@ -206,13 +313,16 @@ public class WriteFragment extends Fragment {
             @Override
             protected void onPostExecute(Integer result) {
                 super.onPostExecute(result);
-                if(result == 1){
+                progressBar.setVisibility(View.GONE);
+                if (result == 1) {
                     Log.d("mywrite", "글쓰기 성공");
-                    Intent intent = new Intent(writeContext,ListActivity.class);
+                    //ListFragment로 가는거는 그냥 간단히 MotherActivity 부르면 된다.
+                    //왜냐면 리스트 프래그먼트가 첫 화면이기 때문
+                    Intent intent = new Intent(writeContext, MotherActivity.class);
                     startActivity(intent);
-                }else{
+                } else {
                     Log.d("mywrite", "글쓰기 실패");
-                    Toast.makeText(writeContext,"글쓰기에 실패했습니다",Toast.LENGTH_LONG).show();
+                    Toast.makeText(writeContext, "글쓰기에 실패했습니다", Toast.LENGTH_LONG).show();
                 }
             }
         }.execute();
