@@ -5,20 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity" >
+    tools:context=".MotherActivity" >
     <!-- 각각의 Fragment를 넣을 Container -->
     <include layout="@layout/my_toolbar"/>
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
-        android:layout_height="719dp"
-        android:background="#000000"/>
+        android:layout_height="650dp"
+        android:background="@color/colorBlack"/>
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_view"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="match_parent"
         app:itemIconTint="#FFFFFF"
         android:background="#000000"
         app:itemTextColor="#FFFFFF"

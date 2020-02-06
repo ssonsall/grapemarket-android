@@ -24,9 +24,11 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
+import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.permission.PermissionsActivity;
 import com.bitc502.grapemarket.permission.PermissionsChecker;
 import com.squareup.picasso.Picasso;
@@ -44,9 +46,9 @@ public class WriteFragment extends Fragment {
     private EditText write_title, write_price, write_content;
     private List<String> imagePathList;
     private Context writeContext;
-    private ConstraintLayout progressBar;
     private Spinner write_category;
     private String category;
+    private TextView rangeSet;
     private ArrayAdapter spinnerAdpater;
     private FrameLayout frameLayoutImg1, frameLayoutImg2, frameLayoutImg3, frameLayoutImg4, frameLayoutImg5;
 
@@ -61,7 +63,9 @@ public class WriteFragment extends Fragment {
         permissionRead = false;
         permissionWrite = false;
 
-        progressBar = v.findViewById(R.id.progressBarLayout);
+        rangeSet = getActivity().findViewById(R.id.toolbar_range_set);
+        rangeSet.setVisibility(View.INVISIBLE);
+
         frameLayoutImg1 = v.findViewById(R.id.write_selectedImg1_layout);
         frameLayoutImg1.setVisibility(View.INVISIBLE);
         frameLayoutImg2 = v.findViewById(R.id.write_selectedImg2_layout);
@@ -101,6 +105,7 @@ public class WriteFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 category = (String) adapterView.getItemAtPosition(i);
+                Log.d("spintest", category);
             }
 
             @Override
@@ -111,6 +116,12 @@ public class WriteFragment extends Fragment {
 
         return v;
     }
+
+    //카테고리 옆 화살표 눌렀을때도 카테고리 스피너 뜨도록
+    public void write_spinner_arrow_btn_clicked(View v){
+        write_category.performClick();
+    }
+
 
     public void btnImgDelete1(View v) {
         //imagePathList 하나씩 땡기기 (remove 하면 자동으로 인덱스 정렬되나? 되면 꿀이고 안되면 개고생)
@@ -227,6 +238,8 @@ public class WriteFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        CustomAnimationDialog podoLoading = new CustomAnimationDialog(writeContext);
+        podoLoading.show();
         if (resultCode == getActivity().RESULT_OK && requestCode == 1010) {
             try {
                 if (data == null) {
@@ -285,6 +298,7 @@ public class WriteFragment extends Fragment {
                         }
                     }
                 }
+                podoLoading.dismiss();
             } catch (Exception e) {
                 Log.d("myerror", e.toString());
             }
@@ -294,10 +308,11 @@ public class WriteFragment extends Fragment {
 
     public void btnWriteComplete(View v) {
         new AsyncTask<Void, Integer, Integer>() {
+            CustomAnimationDialog podoLoading = new CustomAnimationDialog(writeContext);
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressBar.setVisibility(View.VISIBLE);
+                podoLoading.show();
             }
 
             @Override
@@ -313,7 +328,7 @@ public class WriteFragment extends Fragment {
             @Override
             protected void onPostExecute(Integer result) {
                 super.onPostExecute(result);
-                progressBar.setVisibility(View.GONE);
+                podoLoading.dismiss();
                 if (result == 1) {
                     Log.d("mywrite", "글쓰기 성공");
                     //ListFragment로 가는거는 그냥 간단히 MotherActivity 부르면 된다.

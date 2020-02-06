@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
-import com.bitc502.grapemarket.currentuserinfo.Session;
+import com.bitc502.grapemarket.singleton.Session;
 import com.bitc502.grapemarket.gps.Gps;
 import com.bitc502.grapemarket.model.UserLocationSetting;
 
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MyLocationAuthActivity extends AppCompatActivity {
-    private TextView savedAddress,savedAddressX,savedAddressY,currentAddress,currentAddressX,currentAddressY,adressAuthResult,infoAlreadyAdressAuth;
+    private TextView savedAddress, savedAddressX, savedAddressY, currentAddress, currentAddressX, currentAddressY, adressAuthResult, infoAlreadyAdressAuth;
     private Context locationAuthContext;
     private LinearLayout addressAuthLayout;
     private Button btnAuthAddress;
@@ -41,7 +41,7 @@ public class MyLocationAuthActivity extends AppCompatActivity {
     private Gps gps;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
-    String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +61,17 @@ public class MyLocationAuthActivity extends AppCompatActivity {
         setSavedAddressData();
     }
 
+    public void btnToolbarBack(View v) {
+        super.onBackPressed();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
     }
 
-    public void btnAddressAuthClicked(View V){
-        if(savedAddress != null && !savedAddress.getText().toString().equals("설정된 주소가 없습니다.")) {
+    public void btnAddressAuthClicked(View V) {
+        if (savedAddress != null && !savedAddress.getText().toString().equals("설정된 주소가 없습니다.")) {
             //현재 위치 가져오기
             if (!checkLocationServicesStatus()) {
                 showDialogForLocationServiceSetting();
@@ -121,12 +125,12 @@ public class MyLocationAuthActivity extends AppCompatActivity {
                 Toast.makeText(locationAuthContext, "주소인증에 실패했습니다.", Toast.LENGTH_LONG).show();
                 adressAuthResult.setText("주소인증 실패");
             }
-        }else{
+        } else {
             Toast.makeText(locationAuthContext, "주소 설정을 먼저 해주세요.", Toast.LENGTH_LONG).show();
         }
     }
 
-    public void setSavedAddressData(){
+    public void setSavedAddressData() {
         try {
             new AsyncTask<Void, UserLocationSetting, UserLocationSetting>() {
                 @Override
@@ -151,15 +155,15 @@ public class MyLocationAuthActivity extends AppCompatActivity {
                     savedAddress.setText(userLocationSetting.getAddress());
                     savedAddressX.setText(userLocationSetting.getAddressX());
                     savedAddressY.setText(userLocationSetting.getAddressY());
-                    if(savedAddress.getText().toString() != null && !savedAddress.getText().toString().equals("")){
+                    if (savedAddress.getText().toString() != null && !savedAddress.getText().toString().equals("")) {
                         //myCurrentLocationShowLayout.setVisibility(View.VISIBLE);
-                        if(userLocationSetting.getAddressAuth() == 1){
+                        if (userLocationSetting.getAddressAuth() == 1) {
                             addressAuthLayout.setVisibility(View.GONE);
                             btnAuthAddress.setEnabled(false);
                             btnAuthAddress.setVisibility(View.GONE);
                             infoAlreadyAdressAuth.setVisibility(View.VISIBLE);
                         }
-                    }else{
+                    } else {
                         savedAddress.setText("설정된 주소가 없습니다.");
                         savedAddressX.setText("설정된 주소가 없습니다.");
                         savedAddressY.setText("설정된 주소가 없습니다.");
@@ -168,12 +172,12 @@ public class MyLocationAuthActivity extends AppCompatActivity {
 
                 }
             }.execute();
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d("myerror", e.toString());
         }
     }
 
-    public void checkRunTimePermission(){
+    public void checkRunTimePermission() {
 
         //런타임 퍼미션 처리
         // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
@@ -235,7 +239,7 @@ public class MyLocationAuthActivity extends AppCompatActivity {
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
-    public String getCurrentAddress( double latitude, double longitude) {
+    public String getCurrentAddress(double latitude, double longitude) {
         //지오코더... GPS를 주소로 변환
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses;

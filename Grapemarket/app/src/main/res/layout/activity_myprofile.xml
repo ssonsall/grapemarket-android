@@ -10,7 +10,6 @@
 
     <include layout="@layout/my_toolbar" />
 
-    <include layout="@layout/my_progress_bar" />
 
 
     <de.hdodenhof.circleimageview.CircleImageView

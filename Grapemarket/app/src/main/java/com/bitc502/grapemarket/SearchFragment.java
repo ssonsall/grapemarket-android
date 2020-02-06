@@ -17,15 +17,19 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
+import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.model.BoardForList;
 import com.bitc502.grapemarket.recycler.BoardListAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SearchFragment extends Fragment{
+public class SearchFragment extends Fragment {
     private EditText searchInput;
     private Spinner searchCategory;
     private String category;
@@ -33,47 +37,149 @@ public class SearchFragment extends Fragment{
     private RecyclerView boardListRecylerView;
     private BoardListAdapter boardListAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private ConstraintLayout progressBarLayout;
     private ArrayAdapter spinnerAdpater;
+    private TextView rangeSet, currentRangeTv;
+    private SeekBar searchSeekbar;
+    private Integer range, pageNumber;
+    private List<BoardForList> boardForLists;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_search, container, false);
         searchContext = getContext();
-        progressBarLayout = v.findViewById(R.id.progressBarLayout);
+        pageNumber = 0;
+        boardForLists = new ArrayList<>();
+        searchSeekbar = v.findViewById(R.id.search_range_seek);
         boardListRecylerView = v.findViewById(R.id.search_list);
         searchCategory = v.findViewById(R.id.search_category);
         searchInput = v.findViewById(R.id.searchInput);
-        spinnerAdpater= ArrayAdapter.createFromResource(getContext(),R.array.search_category,R.layout.spinner_dialog_layout);
+
+        currentRangeTv = v.findViewById(R.id.search_current_range);
+        rangeSet = getActivity().findViewById(R.id.toolbar_range_set);
+        rangeSet.setVisibility(View.INVISIBLE);
+        spinnerAdpater = ArrayAdapter.createFromResource(getContext(), R.array.search_category, R.layout.spinner_dialog_layout);
         spinnerAdpater.setDropDownViewResource(R.layout.spinner_text_setting);
         searchCategory.setAdapter(spinnerAdpater);
         searchCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                category = (String)adapterView.getItemAtPosition(i);
+                category = (String) adapterView.getItemAtPosition(i);
+                Log.d("spintest3", category);
 
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
+
+        searchSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                Integer currentValue = 5 + (seekBar.getProgress() * 5);
+                currentRangeTv.setText("반경 : " + currentValue.toString() + "km");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Integer currentValue = 5 + (seekBar.getProgress() * 5);
+                currentRangeTv.setText("반경 : " + currentValue.toString() + "km");
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Integer currentValue = 5 + (seekBar.getProgress() * 5);
+                currentRangeTv.setText("반경 : " + currentValue.toString() + "km");
+            }
+        });
+
+        //RecyclerView 끝에 왔을때 추가데이터 로딩
+        boardListRecylerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+                int totalItemCnt = recyclerView.getAdapter().getItemCount() - 1;
+
+                if (lastItemPosition == totalItemCnt && totalItemCnt > 6) {
+                    Log.d("crazy", "loadingExtraData() 호출");
+                    pageNumber++;
+                    loadingExtraData();
+                }
+            }
+        });
         return v;
     }
 
+    public void search_spinner_arrow_btn_clicked(View v) {
+        searchCategory.performClick();
+    }
 
-    public void btnProductSearchClicked(View v){
+
+    public void loadingExtraData() {
+        new AsyncTask<Void, List<BoardForList>, List<BoardForList>>() {
+            CustomAnimationDialog podoLoading = new CustomAnimationDialog(searchContext);
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                if (currentRangeTv.getText().toString().equals("반경 : 5km")) {
+                    range = 5;
+                } else if (currentRangeTv.getText().toString().equals("반경 : 10km")) {
+                    range = 10;
+                } else if (currentRangeTv.getText().toString().equals("반경 : 15km")) {
+                    range = 15;
+                }
+                podoLoading.show();
+            }
+
+            @Override
+            protected List<BoardForList> doInBackground(Void... voids) {
+                return Connect2Server.search(category, searchInput.getText().toString(), range, pageNumber);
+            }
+
+            @Override
+            protected void onProgressUpdate(List<BoardForList>... values) {
+                super.onProgressUpdate(values);
+            }
+
+            @Override
+            protected void onPostExecute(List<BoardForList> result) {
+                super.onPostExecute(result);
+                int resultSize = result.size();
+                for (int i = 0; i < resultSize; i++) {
+                    boardForLists.add(result.get(i));
+                }
+                boardListAdapter.notifyDataSetChanged();
+                podoLoading.dismiss();
+            }
+        }.execute();
+    }
+
+    public void btnProductSearchClicked(View v) {
         try {
             new AsyncTask<Void, List<BoardForList>, List<BoardForList>>() {
+                CustomAnimationDialog podoLoading = new CustomAnimationDialog(searchContext);
+
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
-                    progressBarLayout.setVisibility(View.VISIBLE);
+                    pageNumber = 0;
+                    if (currentRangeTv.getText().toString().equals("반경 : 5km")) {
+                        range = 5;
+                    } else if (currentRangeTv.getText().toString().equals("반경 : 10km")) {
+                        range = 10;
+                    } else if (currentRangeTv.getText().toString().equals("반경 : 15km")) {
+                        range = 15;
+                    }
+                    podoLoading.show();
                 }
 
                 @Override
                 protected List<BoardForList> doInBackground(Void... voids) {
-                    return Connect2Server.search(category, searchInput.getText().toString());
+                    return Connect2Server.search(category, searchInput.getText().toString(), range, pageNumber);
                 }
 
                 @Override
@@ -82,18 +188,20 @@ public class SearchFragment extends Fragment{
                 }
 
                 @Override
-                protected void onPostExecute(List<BoardForList> boardForList) {
-                    super.onPostExecute(boardForList);
+                protected void onPostExecute(List<BoardForList> result) {
+                    super.onPostExecute(result);
+                    boardForLists.clear();
+                    boardForLists = result;
                     linearLayoutManager = new LinearLayoutManager(searchContext);
                     linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                     boardListRecylerView.setLayoutManager(linearLayoutManager);
                     boardListAdapter = new BoardListAdapter();
-                    boardListAdapter.setBoardList(boardForList);
+                    boardListAdapter.setBoardList(result);
                     boardListRecylerView.setAdapter(boardListAdapter);
-                    progressBarLayout.setVisibility(View.GONE);
+                    podoLoading.dismiss();
                 }
             }.execute();
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d("searcht", e.toString());
         }
     }

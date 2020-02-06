@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorBlack"
-    tools:context=".MySettingActivity">
+    tools:context=".MotherActivity">
 
     <TextView
         android:id="@+id/btnMyInfo"

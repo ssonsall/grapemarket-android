@@ -1,35 +1,29 @@
 package com.bitc502.grapemarket;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bitc502.grapemarket.connect2server.Connect2Server;
-import com.bitc502.grapemarket.currentuserinfo.Session;
+import androidx.appcompat.app.AppCompatActivity;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import com.bitc502.grapemarket.connect2server.Connect2Server;
+import com.bitc502.grapemarket.singleton.Session;
+import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 
 public class MainActivity extends AppCompatActivity {
     private TextView main_username;
     private TextView main_password;
     private Context mainContext;
     private String testUsername,testPassword;
-    private View systemSoftKey,mainCenterView;
-    private ProgressBar progressBar;
-    final int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            |View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            |View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+    private View systemSoftKey;
+//    final int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//            |View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//            |View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,33 +32,30 @@ public class MainActivity extends AppCompatActivity {
         main_username = findViewById(R.id.main_username);
         main_password = findViewById(R.id.main_password);
         mainContext = getApplicationContext();
-        progressBar = findViewById(R.id.main_progress_bar);
-        mainCenterView = findViewById(R.id.main_center_space);
 
         //TestLogin Setting
-        testUsername = "han";
+        testUsername = "gakki";
         testPassword = "1";
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        systemSoftKey = getWindow().getDecorView();
-        systemSoftKey.setSystemUiVisibility(uiOptions);
+//        systemSoftKey = getWindow().getDecorView();
+//        systemSoftKey.setSystemUiVisibility(uiOptions);
     }
 
     //로그인 버튼
     public void btnLoginClicked(View view){
-
         new AsyncTask<Void,Boolean,Boolean>(){
+            CustomAnimationDialog podoLoading = new CustomAnimationDialog(MainActivity.this);
             Intent intent;
             String username = main_username.getText().toString();
             String password = main_password.getText().toString();
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                mainCenterView.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
+                podoLoading.show();
             }
 
             @Override
@@ -81,8 +72,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Boolean loginResult) {
                 super.onPostExecute(loginResult);
-                mainCenterView.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+                podoLoading.dismiss();
                 if(loginResult) {
                     intent = new Intent(getApplicationContext(), MotherActivity.class);
                     startActivity(intent);
@@ -99,18 +89,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
-
-
     //테스트 로그인
     public void btnTestLoginClicked(View v){
         new AsyncTask<Void,Boolean,Boolean>(){
             Intent intent;
+            CustomAnimationDialog podoLoading = new CustomAnimationDialog(MainActivity.this);
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                mainCenterView.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
+                podoLoading.show();
             }
 
             @Override
@@ -127,8 +114,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Boolean loginResult) {
                 super.onPostExecute(loginResult);
-                mainCenterView.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+                podoLoading.dismiss();
                 if(loginResult) {
                     intent = new Intent(getApplicationContext(), MotherActivity.class);
                     startActivity(intent);

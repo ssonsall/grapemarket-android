@@ -2,7 +2,6 @@ package com.bitc502.grapemarket;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.Manifest;
 import android.content.Context;
@@ -17,10 +16,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
+import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.model.CurrentUserInfoForProfile;
 import com.bitc502.grapemarket.model.User;
 import com.bitc502.grapemarket.permission.PermissionsActivity;
@@ -33,9 +32,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MyProfileActivity extends AppCompatActivity {
 
-    private ConstraintLayout progressBarLayout;
-    private TextView currentUsername,currentName,currentAddress,currentAddressAuth;
-    private EditText currentEmail,currentPhone;
+    private TextView currentUsername, currentName, currentAddress, currentAddressAuth;
+    private EditText currentEmail, currentPhone;
     private CircleImageView currentProfilePhoto;
     private Context myProfileContext;
     private Button btnChangeEmail, btnChangePhone;
@@ -44,6 +42,7 @@ public class MyProfileActivity extends AppCompatActivity {
     PermissionsChecker checker;
     private final String[] PERMISSIONS_READ_STORAGE = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
     private String imagePath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +50,6 @@ public class MyProfileActivity extends AppCompatActivity {
         user = new User();
         myProfileContext = getApplicationContext();
         checker = new PermissionsChecker(myProfileContext);
-        progressBarLayout = findViewById(R.id.progressBarLayout);
         btnChangeEmail = findViewById(R.id.btn_myprofile_change_email);
         btnChangePhone = findViewById(R.id.btn_myprofile_change_phone);
         currentUsername = findViewById(R.id.myprofile_username);
@@ -64,8 +62,12 @@ public class MyProfileActivity extends AppCompatActivity {
         setMyProfileInfo();
     }
 
+    public void btnToolbarBack(View v) {
+        super.onBackPressed();
+    }
+
     //프로필 사진 변경
-    public void btnChangeProfileImageClicked(View v){
+    public void btnChangeProfileImageClicked(View v) {
         if (checker.lacksPermissions(PERMISSIONS_READ_STORAGE)) {
             startPermissionsActivity(PERMISSIONS_READ_STORAGE);
         } else {
@@ -106,7 +108,7 @@ public class MyProfileActivity extends AppCompatActivity {
                 } else {
 
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.d("myerror", e.toString());
             }
 
@@ -118,51 +120,53 @@ public class MyProfileActivity extends AppCompatActivity {
     }
 
     //비밀번호 변경 액티비티로 이동
-    public void btnChangePassword(View v){
-        Intent intent = new Intent(myProfileContext,ChangePasswordActivity.class);
+    public void btnChangePassword(View v) {
+        Intent intent = new Intent(myProfileContext, ChangePasswordActivity.class);
         startActivity(intent);
     }
 
     //이메일 주소 수정
-    public void btnChangeEmailClicked(View v){
-        if(currentEmail.isEnabled()){
+    public void btnChangeEmailClicked(View v) {
+        if (currentEmail.isEnabled()) {
             currentEmail.setEnabled(false);
             btnChangeEmail.setText("수정");
             user.setEmail(currentEmail.getText().toString());
-        }else{
+        } else {
             currentEmail.setEnabled(true);
             currentEmail.requestFocus();
             //키보드 불러내기
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,InputMethodManager.HIDE_IMPLICIT_ONLY);
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
             btnChangeEmail.setText("완료");
         }
 
     }
 
     //전화번호 수정
-    public void btnChangePhoneClicked(View v){
-        if(currentPhone.isEnabled()){
+    public void btnChangePhoneClicked(View v) {
+        if (currentPhone.isEnabled()) {
             currentPhone.setEnabled(false);
             btnChangePhone.setText("수정");
             user.setPhone(currentPhone.getText().toString());
-        }else{
+        } else {
             currentPhone.setEnabled(true);
             currentPhone.requestFocus();
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,InputMethodManager.HIDE_IMPLICIT_ONLY);
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
             btnChangePhone.setText("완료");
         }
 
     }
 
     //프로필 수정완료
-    public void btnChangeProfileCompleteClicked(View v){
+    public void btnChangeProfileCompleteClicked(View v) {
         new AsyncTask<Void, Boolean, Boolean>() {
+            CustomAnimationDialog podoLoading = new CustomAnimationDialog(MyProfileActivity.this);
+
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressBarLayout.setVisibility(View.VISIBLE);
+                podoLoading.show();
             }
 
             @Override
@@ -178,7 +182,7 @@ public class MyProfileActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Boolean result) {
                 super.onPostExecute(result);
-                progressBarLayout.setVisibility(View.GONE);
+                podoLoading.dismiss();
             }
 
         }.execute();
@@ -187,10 +191,12 @@ public class MyProfileActivity extends AppCompatActivity {
     //프로필 액티비티 진입시 현재 유저정보 가져와서 세팅하기
     public void setMyProfileInfo() {
         new AsyncTask<Void, Boolean, CurrentUserInfoForProfile>() {
+            CustomAnimationDialog podoLoading = new CustomAnimationDialog(MyProfileActivity.this);
+
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressBarLayout.setVisibility(View.VISIBLE);
+                podoLoading.show();
             }
 
             @Override
@@ -212,17 +218,17 @@ public class MyProfileActivity extends AppCompatActivity {
                 currentPhone.setText(currentUserInfo.getPhone());
                 currentProfilePhoto.setImageBitmap(currentUserInfo.getUserProfilePhoto());
                 currentAddress.setText(currentUserInfo.getAddress());
-                if(currentUserInfo.getAddressAuth() == 1){
+                if (currentUserInfo.getAddressAuth() == 1) {
                     currentAddressAuth.setText("인증");
-                }else{
+                } else {
                     currentAddressAuth.setText("인증 안됨");
                 }
-                progressBarLayout.setVisibility(View.GONE);
 
                 user.setId(currentUserInfo.getId());
                 user.setEmail(currentUserInfo.getEmail());
                 user.setPhone(currentUserInfo.getPhone());
                 user.setUserProfile(currentUserInfo.getUserProfile());
+                podoLoading.dismiss();
             }
 
         }.execute();

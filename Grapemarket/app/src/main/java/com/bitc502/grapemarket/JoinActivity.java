@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.bitc502.grapemarket.Util.InternetConnection;
 import com.bitc502.grapemarket.connect2server.Connect2Server;
+import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.permission.PermissionsActivity;
 import com.bitc502.grapemarket.permission.PermissionsChecker;
 import com.squareup.picasso.Picasso;
@@ -66,10 +67,11 @@ public class JoinActivity extends AppCompatActivity {
         if(!TextUtils.isEmpty(imagePath)){
             if(InternetConnection.checkConnection(joinContext)){
                 new AsyncTask<Void,Integer,Integer>(){
-
+                    CustomAnimationDialog podoLoading = new CustomAnimationDialog(JoinActivity.this);
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
+                        podoLoading.show();
                     }
 
                     @Override
@@ -97,6 +99,7 @@ public class JoinActivity extends AppCompatActivity {
                     @Override
                     protected void onPostExecute(Integer integer) {
                         super.onPostExecute(integer);
+                        podoLoading.dismiss();
                         if (integer == 1){
                             Log.d("myerror", "회원가입 성공");
                             showSelectedImageView.setVisibility(View.INVISIBLE);

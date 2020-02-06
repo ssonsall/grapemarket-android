@@ -29,19 +29,11 @@ public class BoardForList implements Serializable {
 
     private List<Likes> like; // 좋아요
 
-//	@OneToMany(mappedBy = "board")
-//	@JsonIgnoreProperties({ "user","board" })
-//	@OnDelete(action = OnDeleteAction.CASCADE)
-//	private List<Chat> chat;
-
     // id, username, address
     private User user;
 
-    // 상품 사진 시작
+    // 상품 사진 메인사진
     private Bitmap image1;
-
-    // 상품 사진 끝
-
 
     private Timestamp createDate;
 

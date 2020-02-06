@@ -1,4 +1,4 @@
-package com.bitc502.grapemarket.currentuserinfo;
+package com.bitc502.grapemarket.singleton;
 
 import com.bitc502.grapemarket.model.CurrentUserInfo;
 

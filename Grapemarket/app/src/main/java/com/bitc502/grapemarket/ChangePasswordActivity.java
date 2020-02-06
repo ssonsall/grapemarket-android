@@ -12,19 +12,18 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
+import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 
 public class ChangePasswordActivity extends AppCompatActivity {
 
     private EditText password, passwordConfirm;
     private Context changPasswordContext;
-    private ConstraintLayout progressBarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
         changPasswordContext = getApplicationContext();
-        progressBarLayout = findViewById(R.id.progressBarLayout);
         password = findViewById(R.id.change_password_new);
         passwordConfirm = findViewById(R.id.change_password_new_confirm);
     }
@@ -34,10 +33,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
         String newPasswordConfirm = passwordConfirm.getText().toString();
         if (newPassword.equals(newPasswordConfirm)) {
             new AsyncTask<Void, Boolean, Boolean>() {
+                CustomAnimationDialog podoLoading = new CustomAnimationDialog(ChangePasswordActivity.this);
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
-                    progressBarLayout.setVisibility(View.VISIBLE);
+                    podoLoading.show();
                 }
 
                 @Override
@@ -53,12 +53,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 @Override
                 protected void onPostExecute(Boolean result) {
                     super.onPostExecute(result);
+                    podoLoading.dismiss();
                     if(result) {
-                        progressBarLayout.setVisibility(View.GONE);
                         Intent intent = new Intent(changPasswordContext,MyProfileActivity.class);
                         startActivity(intent);
                     }else{
-                        progressBarLayout.setVisibility(View.GONE);
                         Toast.makeText(changPasswordContext, "비밀번호 변경에 실패했습니다.", Toast.LENGTH_LONG).show();
                     }
                 }

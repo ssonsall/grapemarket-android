@@ -4,30 +4,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorBlack"
-    tools:context=".SearchActivity">
-    <include layout="@layout/my_progress_bar"/>
+    android:orientation="vertical"
+    tools:context=".MotherActivity">
 
 
-
-    <Spinner
-        android:id="@+id/search_category"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:spinnerMode="dialog"
-        android:prompt="@string/search_category_title"
-        android:entries="@array/search_category"
-        />
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/search_category"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:entries="@array/search_category"
+            android:prompt="@string/search_category_title"
+            android:gravity="center"
+            android:spinnerMode="dialog" />
+
+        <TextView
+            android:id="@+id/write_spinner_arrow_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="search_spinner_arrow_btn_clicked"
+            android:text="▼"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="7dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorWhite" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/search_current_range"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="반경 : 5km"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp" />
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="1dp" />
+
+        <SeekBar
+            android:id="@+id/search_range_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:max="2"
+            android:min="0"
+            android:progress="0" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorWhite"/>
+        android:background="@color/colorWhite" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="10dp"/>
+        android:layout_height="10dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,12 +97,12 @@
             android:id="@+id/searchInput"
             android:layout_width="360dp"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorWhite"
             android:ems="10"
             android:hint="검색어 입력"
-            android:backgroundTint="@color/colorWhite"
+            android:inputType="text"
             android:textColor="@color/colorWhite"
-            android:textColorHint="@color/colorWhite"
-            android:inputType="text" />
+            android:textColorHint="@color/colorWhite" />
 
         <ImageButton
             android:id="@+id/btnProductSearch"

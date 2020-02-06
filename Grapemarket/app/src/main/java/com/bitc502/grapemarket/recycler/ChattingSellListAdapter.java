@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitc502.grapemarket.R;
 import com.bitc502.grapemarket.connect2server.Connect2Server;
-import com.bitc502.grapemarket.currentuserinfo.Session;
+import com.bitc502.grapemarket.singleton.Session;
 import com.bitc502.grapemarket.model.Chat;
 import com.bitc502.grapemarket.model.ChatList;
 

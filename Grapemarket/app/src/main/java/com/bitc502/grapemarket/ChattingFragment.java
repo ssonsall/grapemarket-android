@@ -14,10 +14,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
+import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.model.ChatList;
-import com.bitc502.grapemarket.recycler.BoardListAdapter;
 import com.bitc502.grapemarket.recycler.ChattingBuyListAdapter;
 import com.bitc502.grapemarket.recycler.ChattingSellListAdapter;
 
@@ -28,7 +29,7 @@ public class ChattingFragment extends Fragment {
     private ChattingBuyListAdapter chattingListBuyAdapter;
     private ChattingSellListAdapter chattingListSellAdapter;
     private LinearLayoutManager linearLayoutManagerBuy,linearLayoutManagerSell;
-    private ConstraintLayout progressBarLayout;
+    private TextView rangeSet;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -36,7 +37,8 @@ public class ChattingFragment extends Fragment {
         chattingListContext = getContext();
         chattingListBuy = v.findViewById(R.id.chatting_buy_list);
         chattingListSell = v.findViewById(R.id.chatting_sell_list);
-        progressBarLayout = v.findViewById(R.id.progressBarLayout);
+        rangeSet = getActivity().findViewById(R.id.toolbar_range_set);
+        rangeSet.setVisibility(View.INVISIBLE);
         setChattingList();
         return v;
     }
@@ -44,10 +46,11 @@ public class ChattingFragment extends Fragment {
 
     public void setChattingList(){
         new AsyncTask<Void,ChatList, ChatList>(){
+            CustomAnimationDialog podoLoading = new CustomAnimationDialog(chattingListContext);
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressBarLayout.setVisibility(View.VISIBLE);
+                podoLoading.show();
             }
 
             @Override
@@ -74,7 +77,6 @@ public class ChattingFragment extends Fragment {
                     chattingListBuyAdapter.setChatList(chatList);
 
                     chattingListBuy.setAdapter(chattingListBuyAdapter);
-                    progressBarLayout.setVisibility(View.GONE);
 
                     //판매 채팅
                     linearLayoutManagerSell = new LinearLayoutManager(chattingListContext);
@@ -86,7 +88,7 @@ public class ChattingFragment extends Fragment {
                     chattingListSellAdapter.setChatList(chatList);
 
                     chattingListSell.setAdapter(chattingListSellAdapter);
-                    progressBarLayout.setVisibility(View.GONE);
+                    podoLoading.dismiss();
                 }catch (Exception e){
                     Log.d("mychatlist", e.toString());
                 }

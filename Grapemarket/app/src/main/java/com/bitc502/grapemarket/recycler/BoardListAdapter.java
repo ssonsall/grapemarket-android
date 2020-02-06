@@ -1,5 +1,6 @@
 package com.bitc502.grapemarket.recycler;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
@@ -31,6 +32,12 @@ import lombok.NoArgsConstructor;
 public class BoardListAdapter extends RecyclerView.Adapter<BoardDataListHolder>{
 
     private List<BoardForList> boardList;
+    private Context context;
+
+
+    public BoardListAdapter(Context context){
+        this.context = context;
+    }
 
     @NonNull
     @Override
@@ -42,7 +49,7 @@ public class BoardListAdapter extends RecyclerView.Adapter<BoardDataListHolder>{
         Drawable drawable = parent.getContext().getDrawable(R.drawable.round_imageview);
         iv.setBackground(drawable);
         iv.setClipToOutline(true);
-        BoardDataListHolder holder = new BoardDataListHolder(view);
+        BoardDataListHolder holder = new BoardDataListHolder(view, context);
 
         return holder;
 

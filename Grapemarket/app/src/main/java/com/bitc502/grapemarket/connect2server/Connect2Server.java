@@ -7,10 +7,12 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.bitc502.grapemarket.currentuserinfo.Session;
+import com.bitc502.grapemarket.model.Likes;
+import com.bitc502.grapemarket.singleton.Session;
 import com.bitc502.grapemarket.model.Board;
 import com.bitc502.grapemarket.model.BoardForDetail;
 import com.bitc502.grapemarket.model.BoardForList;
+import com.bitc502.grapemarket.model.Chat;
 import com.bitc502.grapemarket.model.ChatList;
 import com.bitc502.grapemarket.model.CommentForDetail;
 import com.bitc502.grapemarket.model.CurrentUserInfoForProfile;
@@ -49,19 +51,24 @@ public class Connect2Server {
     private static final String LOGIN_USER_INFO = ip_address + "/android/getUserInfo";
     private static final String JOIN = ip_address + "/android/join";
     private static final String All_LIST = ip_address + "/android/allList";
+    private static final String ALL_LIST_PAGEABLE = ip_address + "/android/allListPageable";
+    private static final String ALL_LIST_PAGEABLE_WITH_RANGE = ip_address + "/android/allListPageableWithRange";
     private static final String DETAIL = ip_address + "/android/detail/";
     private static final String WRITE = ip_address + "/android/write";
     private static final String COMMENT_WRITE = ip_address + "/android/commentWrite";
     private static final String USER_ADDRESS_SETTING = ip_address + "/android/saveUserAddress";
     private static final String GET_SAVED_ADDRESS = ip_address + "/android/getSavedAddress";
     private static final String SAVE_ADDRESS_AUTH = ip_address + "/android/saveAddressAuth";
-    private static final String SEARCH = ip_address + "/android/search";
+    private static final String SEARCH_WITH_RANGE = ip_address + "/android/searchWithRange";
     private static final String CHAT_LIST = ip_address + "/android/chatList";
     private static final String CURRENT_MY_PROFILE = ip_address + "/android/currentmyinfo";
     private static final String CHANGE_PASSWORD = ip_address + "/android/changepassword";
     private static final String CHANGE_PROFILE = ip_address + "/android/changeprofile";
     private static final String DELETE_BOARD = ip_address + "/android/deleteBoard/";
     private static final String MODIFY_BOARD = ip_address + "/android/modifyBoard";
+    private static final String REQUEST_CHATTING = ip_address + "/android/requestChat";
+    private static final String DELETE_LIKE = ip_address + "/android/deleteLike";
+    private static final String SAVE_LIKE = ip_address + "/android/saveLike";
 
     //Login
     public static Boolean sendLoginInfoToServer(String username, String password) {
@@ -154,7 +161,6 @@ public class Connect2Server {
                     .build();
 
             OkHttpClient client = getUnsafeOkHttpClient();
-            ;
             Response response = client.newCall(request).execute();
             String res = response.body().string();
 
@@ -167,6 +173,33 @@ public class Connect2Server {
         } catch (Exception e) {
             Log.d("myerror", e.toString());
             return -1;
+        }
+    }
+
+    //채팅으로 거래하기
+    public static Chat requestChatting(Integer boardId) {
+        try {
+            //OKHTTP3
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("boardId", boardId.toString())
+                    .build();
+
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(REQUEST_CHATTING)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            Chat chat = new Gson().fromJson(res, Chat.class);
+            Log.d("mychattest", chat.getBuyerId().getName());
+            return chat;
+        } catch (Exception e) {
+            Log.d("myChatting", e.toString());
+            return null;
         }
     }
 
@@ -339,13 +372,14 @@ public class Connect2Server {
         }
     }
 
+
     //All List
-    public static List<BoardForList> requestAllBoard() {
+    public static List<BoardForList> requestAllBoard(Integer pageNumber, Integer range) {
         //OKHTTP3
         try {
             Request request = new Request.Builder()
                     .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                    .url(All_LIST)
+                    .url(ALL_LIST_PAGEABLE_WITH_RANGE + "?page=" + pageNumber.toString() + "&range=" + range.toString())
                     .get()
                     .build();
 
@@ -674,10 +708,61 @@ public class Connect2Server {
         }
     }
 
-    //검색
-    public static List<BoardForList> search(String categoryString, String userInput) {
+    public static Likes saveLike(Integer boardId) {
         try {
-            int category = 0;
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("boardId", boardId.toString())
+                    .build();
+
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(SAVE_LIKE)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            Likes like = new Gson().fromJson(res, Likes.class);
+            return like;
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return null;
+        }
+    }
+
+    public static Boolean deleteLike(Integer likeId) {
+        try {
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("likeId", likeId.toString())
+                    .build();
+
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(DELETE_LIKE)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            if (res.equals("success")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return false;
+        }
+    }
+
+    //검색
+    public static List<BoardForList> search(String categoryString, String userInput, Integer range, Integer page) {
+        try {
+            Integer category = 0;
             //카테고리 정보 숫자로 세팅
             if (categoryString.equals("전체")) {
                 category = 1;
@@ -714,16 +799,23 @@ public class Connect2Server {
             }
 
             //OKHTTP3
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("category", category + "")
-                    .addFormDataPart("userInput", userInput)
-                    .build();
+//            RequestBody requestBody = new MultipartBody.Builder()
+//                    .setType(MultipartBody.FORM)
+//                    .addFormDataPart("category", category + "")
+//                    .addFormDataPart("userInput", userInput)
+//                    .addFormDataPart("range",range.toString())
+//                    .addFormDataPart("page",page.toString())
+//                    .build();
+
+            Log.d("crazy", "userInput>> " + userInput);
+            Log.d("crazy", "category>> " + category.toString());
+            Log.d("crazy", "range>> " + range.toString());
+            Log.d("crazy", "page>> " + page.toString());
 
             Request request = new Request.Builder()
                     .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                    .url(SEARCH)
-                    .post(requestBody)
+                    .url(SEARCH_WITH_RANGE + "?page=" + page.toString() + "&range=" + range.toString() + "&userInput=" + userInput + "&category=" + category.toString())
+                    .get()
                     .build();
 
             OkHttpClient client = getUnsafeOkHttpClient();
@@ -899,22 +991,22 @@ public class Connect2Server {
 
     //게시글 수정
     public static Boolean modifyBoard(Integer boardId, List<String> imagePathList, String categoryString, String title, String price, String content,
-                                      String currentImage1,String currentImage2,String currentImage3,String currentImage4,String currentImage5) {
+                                      String currentImage1, String currentImage2, String currentImage3, String currentImage4, String currentImage5) {
         try {
-            if(TextUtils.isEmpty(currentImage1)){
-                currentImage1="";
+            if (TextUtils.isEmpty(currentImage1)) {
+                currentImage1 = "";
             }
-            if(TextUtils.isEmpty(currentImage2)){
-                currentImage2="";
+            if (TextUtils.isEmpty(currentImage2)) {
+                currentImage2 = "";
             }
-            if(TextUtils.isEmpty(currentImage3)){
-                currentImage3="";
+            if (TextUtils.isEmpty(currentImage3)) {
+                currentImage3 = "";
             }
-            if(TextUtils.isEmpty(currentImage4)){
-                currentImage4="";
+            if (TextUtils.isEmpty(currentImage4)) {
+                currentImage4 = "";
             }
-            if(TextUtils.isEmpty(currentImage5)){
-                currentImage5="";
+            if (TextUtils.isEmpty(currentImage5)) {
+                currentImage5 = "";
             }
 
             int category = 0;
@@ -1069,11 +1161,11 @@ public class Connect2Server {
                     .addFormDataPart("productImage3", fileName3, RequestBody.create(MEDIA_TYPE_PNG, sourceFile3))
                     .addFormDataPart("productImage4", fileName4, RequestBody.create(MEDIA_TYPE_PNG, sourceFile4))
                     .addFormDataPart("productImage5", fileName5, RequestBody.create(MEDIA_TYPE_PNG, sourceFile5))
-                    .addFormDataPart("currentImage1",currentImage1)
-                    .addFormDataPart("currentImage2",currentImage2)
-                    .addFormDataPart("currentImage3",currentImage3)
-                    .addFormDataPart("currentImage4",currentImage4)
-                    .addFormDataPart("currentImage5",currentImage5)
+                    .addFormDataPart("currentImage1", currentImage1)
+                    .addFormDataPart("currentImage2", currentImage2)
+                    .addFormDataPart("currentImage3", currentImage3)
+                    .addFormDataPart("currentImage4", currentImage4)
+                    .addFormDataPart("currentImage5", currentImage5)
                     .addFormDataPart("category", category + "")
                     .addFormDataPart("state", "0")
                     .addFormDataPart("title", title)

@@ -8,9 +8,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <!--    <include layout="@layout/my_toolbar"></include>-->
 
-    <include layout="@layout/my_progress_bar" />
 
     <View
         android:id="@+id/view"

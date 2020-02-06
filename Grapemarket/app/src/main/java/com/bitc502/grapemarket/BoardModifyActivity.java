@@ -22,9 +22,9 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
+import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.model.BoardForDetail;
 import com.bitc502.grapemarket.permission.PermissionsActivity;
 import com.bitc502.grapemarket.permission.PermissionsChecker;
@@ -48,7 +48,6 @@ public class BoardModifyActivity extends AppCompatActivity {
     private ArrayAdapter spinnerAdpater;
     private Integer boardId;
     private BoardForDetail boardForDetail;
-    private ConstraintLayout progressBar;
     private FrameLayout frameLayoutImg1, frameLayoutImg2, frameLayoutImg3, frameLayoutImg4, frameLayoutImg5;
 
     @Override
@@ -63,7 +62,6 @@ public class BoardModifyActivity extends AppCompatActivity {
 
         boardId = getIntent().getExtras().getInt("boardId");
 
-        progressBar = findViewById(R.id.progressBarLayout);
 
         frameLayoutImg1 = findViewById(R.id.write_selectedImg1_layout);
         frameLayoutImg1.setVisibility(View.INVISIBLE);
@@ -103,6 +101,7 @@ public class BoardModifyActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 category = (String) adapterView.getItemAtPosition(i);
+                Log.d("spintest2", category);
             }
 
             @Override
@@ -113,6 +112,10 @@ public class BoardModifyActivity extends AppCompatActivity {
 
         setSavedBoardDetailData();
 
+    }
+
+    public void modify_spinner_arrow_btn_clicked(View v){
+        write_category.performClick();
     }
 
     public void btnImgDelete1(View v) {
@@ -302,10 +305,11 @@ public class BoardModifyActivity extends AppCompatActivity {
 
     public void setSavedBoardDetailData() {
         new AsyncTask<Void, Boolean, BoardForDetail>() {
+            CustomAnimationDialog podoLoading = new CustomAnimationDialog(BoardModifyActivity.this);
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressBar.setVisibility(View.VISIBLE);
+                podoLoading.show();
             }
 
             @Override
@@ -357,7 +361,7 @@ public class BoardModifyActivity extends AppCompatActivity {
                 write_category.setSelection(Integer.parseInt(result.getCategory()) - 3);
                 write_price.setText(result.getPrice());
                 write_content.setText(result.getContent());
-                progressBar.setVisibility(View.GONE);
+                podoLoading.dismiss();
             }
         }.execute();
     }
@@ -472,10 +476,11 @@ public class BoardModifyActivity extends AppCompatActivity {
 
     public void btnWriteComplete(View v) {
         new AsyncTask<Void, Integer, Boolean>() {
+            CustomAnimationDialog podoLoading = new CustomAnimationDialog(BoardModifyActivity.this);
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressBar.setVisibility(View.VISIBLE);
+                podoLoading.show();
             }
 
             @Override
@@ -492,7 +497,7 @@ public class BoardModifyActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Boolean result) {
                 super.onPostExecute(result);
-                progressBar.setVisibility(View.GONE);
+                podoLoading.dismiss();
                 if (result) {
                     Log.d("mywrite", "글쓰기 성공");
                     Intent intent = new Intent(boardModifyContext, MotherActivity.class);

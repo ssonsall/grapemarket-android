@@ -30,12 +30,14 @@ public class BoardDataListHolder extends RecyclerView.ViewHolder {
     private TextView price;
     private TextView cntComment;
     private TextView cntLike;
+    private Context context;
 
     private int id;
 
 
-    public BoardDataListHolder(View itemView) {
+    public BoardDataListHolder(View itemView, Context context) {
         super(itemView);
+        this.context = context;
         image = itemView.findViewById(R.id.list_image);
         title = itemView.findViewById(R.id.title);
         location = itemView.findViewById(R.id.location);

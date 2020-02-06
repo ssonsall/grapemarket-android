@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/myToolbar"
         android:layout_width="match_parent"
@@ -12,14 +14,44 @@
         android:theme="?attr/actionBarTheme"
         app:titleTextColor="#FFFFFF">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PODO MARKET"
-            android:textColor="#FFFFFF"
-            android:textSize="30dp"
-            android:layout_gravity="center"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal">
 
+            <ImageView
+                android:id="@+id/toolbar_left_arrow"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:clickable="true"
+                android:onClick="btnToolbarBack"
+                android:src="@drawable/my_left_arrow"
+                android:visibility="visible" />
+
+            <TextView
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="PODO MARKET"
+                android:textColor="@color/colorWhite"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/toolbar_range_set"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="btnRangeSetClicked"
+                android:text="5km ▼"
+                android:textColor="@color/colorWhite"
+                android:textSize="13dp"
+                android:visibility="invisible" />
+        </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
     <View
@@ -34,9 +66,5 @@
         android:layout_height="1dp"
         android:background="#FFFFFF" />
 
-    <View
-        android:id="@+id/view10223"
-        android:layout_width="match_parent"
-        android:layout_height="9dp"
-        android:background="#000000" />
+
 </LinearLayout>
