@@ -15,4 +15,7 @@
     <string name="string_choose_image">Select Image to Upload</string>
     <string name="string_unable_to_pick_image">Unable to Pickup Image</string>
     <string name="string_unable_to_load_image">Unable to Load Image</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,41 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView10"
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/chatting_list_navgationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorWhite"
-        android:textSize="30dp"
-        android:text="구매 채팅 목록" />
+        app:itemTextColor="@color/nav_selector"
+        app:menu="@menu/chatting_list_menu"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="15dp"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorWhite"/>
 
+    <FrameLayout
+        android:id="@+id/chattinglist_mainframe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+<!--    <TextView-->
+<!--        android:id="@+id/textView10"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="@color/colorWhite"-->
+<!--        android:textSize="30dp"-->
+<!--        android:text="구매 채팅 목록" />-->
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@color/colorWhite"/>-->
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatting_buy_list"
-        android:layout_width="match_parent"
-        android:layout_height="300dp" />
 
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorWhite"
-        android:textSize="30dp"
-        android:text="판매 채팅 목록" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorWhite"/>
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/chatting_buy_list"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="300dp" />-->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatting_sell_list"
-        android:layout_width="match_parent"
-        android:layout_height="300dp" />
+<!--    <TextView-->
+<!--        android:id="@+id/textView12"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="@color/colorWhite"-->
+<!--        android:textSize="30dp"-->
+<!--        android:text="판매 채팅 목록" />-->
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@color/colorWhite"/>-->
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/chatting_sell_list"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
 </LinearLayout>

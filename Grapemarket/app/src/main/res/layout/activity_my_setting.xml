@@ -4,57 +4,131 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorBlack"
+    android:orientation="vertical"
     tools:context=".MotherActivity">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 
     <TextView
         android:id="@+id/btnMyInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:textColor="@color/colorWhite"
-        android:textSize="30dp"
         android:onClick="btnMyProfileClicked"
-        android:text="프로필 보기" />
+        android:text="프로필 보기"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <View
+        android:layout_width="380dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:background="@color/colorWhite" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 
     <TextView
         android:id="@+id/btnLocationSet"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:clickable="true"
-        android:textColor="@color/colorWhite"
-        android:textSize="30dp"
         android:onClick="btnLocationSetClicked"
-        android:text="내 동네설정" />
+        android:text="내 동네설정"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <View
+        android:layout_width="380dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:background="@color/colorWhite" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 
     <TextView
         android:id="@+id/btnLocationAuth"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:clickable="true"
-        android:textColor="@color/colorWhite"
-        android:textSize="30dp"
         android:onClick="btnLocationAuthClicked"
-        android:text="동네인증" />
+        android:text="동네인증"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <View
+        android:layout_width="380dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:background="@color/colorWhite" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 
     <TextView
         android:id="@+id/btnMyTradeLog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:textColor="@color/colorWhite"
-        android:textSize="30dp"
         android:onClick="btnMyTradeLogClicked"
-        android:text="거래내역" />
+        android:text="거래내역"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <View
+        android:layout_width="380dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:background="@color/colorWhite" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 
     <TextView
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:textColor="@color/colorWhite"
-        android:textSize="30dp"
         android:onClick="btnLogoutClicked"
-        android:text="로그아웃" />
+        android:text="로그아웃"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <View
+        android:layout_width="380dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:background="@color/colorWhite" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 </LinearLayout>

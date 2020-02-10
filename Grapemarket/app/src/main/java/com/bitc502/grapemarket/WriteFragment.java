@@ -118,7 +118,7 @@ public class WriteFragment extends Fragment {
     }
 
     //카테고리 옆 화살표 눌렀을때도 카테고리 스피너 뜨도록
-    public void write_spinner_arrow_btn_clicked(View v){
+    public void write_spinner_arrow_btn_clicked(View v) {
         write_category.performClick();
     }
 
@@ -239,10 +239,11 @@ public class WriteFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         CustomAnimationDialog podoLoading = new CustomAnimationDialog(writeContext);
-        podoLoading.show();
         if (resultCode == getActivity().RESULT_OK && requestCode == 1010) {
             try {
+                podoLoading.show();
                 if (data == null) {
+                    podoLoading.dismiss();
                     return;
                 }
                 ClipData clipData = data.getClipData();
@@ -264,40 +265,52 @@ public class WriteFragment extends Fragment {
                             cursor.close();
                         }
                     }
-
-                    for(int i = 0 ; i < imagePathList.size(); i++){
-                        if (selectedImage1.getVisibility() != View.VISIBLE) {
-                            //image1에
-                            Picasso.with(writeContext).load(new File(imagePathList.get(0))).into(selectedImage1);
-                            selectedImage1.setVisibility(View.VISIBLE);
-                            frameLayoutImg1.setVisibility(View.VISIBLE);
+                    Log.d("myerror", "imagePathListSize >> " + imagePathList.size());
+                    int imagePathListSize = imagePathList.size();
+                    for (int i = 0; i < imagePathListSize; i++) {
+                        if(imagePathListSize > 0 ) {
+                            if (selectedImage1.getVisibility() != View.VISIBLE) {
+                                //image1에
+                                Picasso.with(writeContext).load(new File(imagePathList.get(0))).into(selectedImage1);
+                                selectedImage1.setVisibility(View.VISIBLE);
+                                frameLayoutImg1.setVisibility(View.VISIBLE);
+                            }
                         }
-                        if (selectedImage2.getVisibility() != View.VISIBLE) {
-                            //image2에
-                            Picasso.with(writeContext).load(new File(imagePathList.get(1))).into(selectedImage2);
-                            selectedImage2.setVisibility(View.VISIBLE);
-                            frameLayoutImg2.setVisibility(View.VISIBLE);
+                        if(imagePathListSize > 1 ) {
+                            if (selectedImage2.getVisibility() != View.VISIBLE) {
+                                //image2에
+                                Picasso.with(writeContext).load(new File(imagePathList.get(1))).into(selectedImage2);
+                                selectedImage2.setVisibility(View.VISIBLE);
+                                frameLayoutImg2.setVisibility(View.VISIBLE);
+                            }
                         }
-                        if (selectedImage3.getVisibility() != View.VISIBLE) {
-                            //image3에
-                            Picasso.with(writeContext).load(new File(imagePathList.get(2))).into(selectedImage3);
-                            selectedImage3.setVisibility(View.VISIBLE);
-                            frameLayoutImg3.setVisibility(View.VISIBLE);
+                        if(imagePathListSize > 2 ) {
+                            if (selectedImage3.getVisibility() != View.VISIBLE) {
+                                //image3에
+                                Picasso.with(writeContext).load(new File(imagePathList.get(2))).into(selectedImage3);
+                                selectedImage3.setVisibility(View.VISIBLE);
+                                frameLayoutImg3.setVisibility(View.VISIBLE);
+                            }
                         }
-                        if (selectedImage4.getVisibility() != View.VISIBLE) {
-                            //image4에
-                            Picasso.with(writeContext).load(new File(imagePathList.get(3))).into(selectedImage4);
-                            selectedImage4.setVisibility(View.VISIBLE);
-                            frameLayoutImg4.setVisibility(View.VISIBLE);
+                        if(imagePathListSize > 3 ) {
+                            if (selectedImage4.getVisibility() != View.VISIBLE) {
+                                //image4에
+                                Picasso.with(writeContext).load(new File(imagePathList.get(3))).into(selectedImage4);
+                                selectedImage4.setVisibility(View.VISIBLE);
+                                frameLayoutImg4.setVisibility(View.VISIBLE);
+                            }
                         }
-                        if (selectedImage5.getVisibility() != View.VISIBLE) {
-                            //image5에
-                            Picasso.with(writeContext).load(new File(imagePathList.get(4))).into(selectedImage5);
-                            selectedImage5.setVisibility(View.VISIBLE);
-                            frameLayoutImg5.setVisibility(View.VISIBLE);
+                        if(imagePathListSize > 4 ) {
+                            if (selectedImage5.getVisibility() != View.VISIBLE) {
+                                //image5에
+                                Picasso.with(writeContext).load(new File(imagePathList.get(4))).into(selectedImage5);
+                                selectedImage5.setVisibility(View.VISIBLE);
+                                frameLayoutImg5.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
                 }
+                Log.d("myerror", "onActivityResult: 디스미스 위에");
                 podoLoading.dismiss();
             } catch (Exception e) {
                 Log.d("myerror", e.toString());
@@ -309,6 +322,7 @@ public class WriteFragment extends Fragment {
     public void btnWriteComplete(View v) {
         new AsyncTask<Void, Integer, Integer>() {
             CustomAnimationDialog podoLoading = new CustomAnimationDialog(writeContext);
+
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();

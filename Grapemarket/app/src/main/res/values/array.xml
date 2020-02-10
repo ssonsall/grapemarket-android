@@ -2,7 +2,8 @@
 <resources>
 
     <string-array name="write_category">
-        <item>디지털/가전</item>
+        <item>생활가전</item>
+        <item>디지털</item>
         <item>가구/인테리어</item>
         <item>유아동/유아도서</item>
         <item>생활/가공식품</item>
@@ -20,8 +21,8 @@
 
     <string-array name="search_category">
         <item>전체</item>
-        <item>인기매물</item>
-        <item>디지털/가전</item>
+        <item>생활가전</item>
+        <item>디지털</item>
         <item>가구/인테리어</item>
         <item>유아동/유아도서</item>
         <item>생활/가공식품</item>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_menu1"
+        android:title="구매채팅" />
+
+    <item
+        android:id="@+id/navigation_menu2"
+        android:title="판매채팅" />
+</menu>

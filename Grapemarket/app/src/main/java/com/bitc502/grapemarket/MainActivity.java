@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
 //            |View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        startActivity(new Intent(this,SplashActivity2.class));
+        startActivity(new Intent(this,SplashActivity.class));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         mainContext = getApplicationContext();
 
         //TestLogin Setting
-        testUsername = "gakki";
+        testUsername = "iu";
         testPassword = "1";
     }
 

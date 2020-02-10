@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -21,78 +24,69 @@ import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.model.ChatList;
 import com.bitc502.grapemarket.recycler.ChattingBuyListAdapter;
 import com.bitc502.grapemarket.recycler.ChattingSellListAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ChattingFragment extends Fragment {
 
-    private Context chattingListContext;
-    private RecyclerView chattingListBuy,chattingListSell;
-    private ChattingBuyListAdapter chattingListBuyAdapter;
-    private ChattingSellListAdapter chattingListSellAdapter;
-    private LinearLayoutManager linearLayoutManagerBuy,linearLayoutManagerSell;
+    // FrameLayout에 각 메뉴의 Fragment를 바꿔 줌
+    //private FragmentManager fragmentManager = getChildFragmentManager();
+    private BottomNavigationView chattingListNavgationView;
+    private Fragment chattingListBuyFragment = new ChattingListBuyFragment();
+    private Fragment chattingListSellFragment = new ChattingListSellFragment();
     private TextView rangeSet;
+    private ChatList chatListGlobal;
+    private Boolean isLoaded;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_chatting, container, false);
-        chattingListContext = getContext();
-        chattingListBuy = v.findViewById(R.id.chatting_buy_list);
-        chattingListSell = v.findViewById(R.id.chatting_sell_list);
+        chattingListNavgationView = v.findViewById(R.id.chatting_list_navgationView);
         rangeSet = getActivity().findViewById(R.id.toolbar_range_set);
         rangeSet.setVisibility(View.INVISIBLE);
-        setChattingList();
+        chatListGlobal = new ChatList();
+        isLoaded = false;
+
+        // 첫 화면 지정
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.chattinglist_mainframe, chattingListBuyFragment).commitAllowingStateLoss();
+
+        // tradeLogNavgationView의 아이템이 선택될 때 호출될 리스너 등록
+        chattingListNavgationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_menu1: {
+                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                        transaction.replace(R.id.chattinglist_mainframe, chattingListBuyFragment).commitAllowingStateLoss();
+                        break;
+                    }
+                    case R.id.navigation_menu2: {
+                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                        transaction.replace(R.id.chattinglist_mainframe, chattingListSellFragment).commitAllowingStateLoss();
+                        break;
+                    }
+                }
+                return true;
+            }
+        });
+
         return v;
     }
 
-
-    public void setChattingList(){
-        new AsyncTask<Void,ChatList, ChatList>(){
-            CustomAnimationDialog podoLoading = new CustomAnimationDialog(chattingListContext);
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                podoLoading.show();
-            }
-
-            @Override
-            protected ChatList doInBackground(Void... voids) {
-                return Connect2Server.getChatList();
-            }
-
-            @Override
-            protected void onProgressUpdate(ChatList... values) {
-                super.onProgressUpdate(values);
-            }
-
-            @Override
-            protected void onPostExecute(ChatList chatList) {
-                super.onPostExecute(chatList);
-                try {
-                    //구매 채팅
-                    linearLayoutManagerBuy = new LinearLayoutManager(chattingListContext);
-                    linearLayoutManagerBuy.setOrientation(LinearLayoutManager.VERTICAL);
-
-                    chattingListBuy.setLayoutManager(linearLayoutManagerBuy);
-
-                    chattingListBuyAdapter = new ChattingBuyListAdapter(getContext());
-                    chattingListBuyAdapter.setChatList(chatList);
-
-                    chattingListBuy.setAdapter(chattingListBuyAdapter);
-
-                    //판매 채팅
-                    linearLayoutManagerSell = new LinearLayoutManager(chattingListContext);
-                    linearLayoutManagerSell.setOrientation(LinearLayoutManager.VERTICAL);
-
-                    chattingListSell.setLayoutManager(linearLayoutManagerSell);
-
-                    chattingListSellAdapter = new ChattingSellListAdapter(getContext());
-                    chattingListSellAdapter.setChatList(chatList);
-
-                    chattingListSell.setAdapter(chattingListSellAdapter);
-                    podoLoading.dismiss();
-                }catch (Exception e){
-                    Log.d("mychatlist", e.toString());
-                }
-            }
-        }.execute();
+    public void setChatListGlobal(ChatList chatList){
+        chatListGlobal.getChatForBuy().clear();
+        chatListGlobal.getChatForSell().clear();
+        isLoaded = true;
+        this.chatListGlobal = chatList;
     }
+
+    public ChatList getChatListGlobal(){
+        return this.chatListGlobal;
+    }
+
+    public Boolean getIsLoaded(){
+        return this.isLoaded;
+    }
+
 }

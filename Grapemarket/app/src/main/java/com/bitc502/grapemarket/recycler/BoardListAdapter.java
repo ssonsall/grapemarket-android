@@ -28,14 +28,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=false)
-public class BoardListAdapter extends RecyclerView.Adapter<BoardDataListHolder>{
+@EqualsAndHashCode(callSuper = false)
+public class BoardListAdapter extends RecyclerView.Adapter<BoardDataListHolder> {
 
     private List<BoardForList> boardList;
     private Context context;
 
 
-    public BoardListAdapter(Context context){
+    public BoardListAdapter(Context context) {
         this.context = context;
     }
 
@@ -58,13 +58,29 @@ public class BoardListAdapter extends RecyclerView.Adapter<BoardDataListHolder>{
     @Override
     public void onBindViewHolder(@NonNull BoardDataListHolder holder, int position) {
         BoardForList data = boardList.get(position);
+
+        //판매완료된거 그레이처리
+        if(data.getState().equals("1")){
+            holder.getTitle().setTextColor(context.getResources().getColor(R.color.colorGray));
+            holder.getLocation().setTextColor(context.getResources().getColor(R.color.colorGray));
+            holder.getUsername().setTextColor(context.getResources().getColor(R.color.colorGray));
+            holder.getPrice().setTextColor(context.getResources().getColor(R.color.colorGray));
+            holder.getListDot().setTextColor(context.getResources().getColor(R.color.colorGray));
+            holder.getListCurrentTradeState().setTextColor(context.getResources().getColor(R.color.colorGray));
+        }
+
         holder.getImage().setImageBitmap(data.getImage1());
         holder.getTitle().setText(data.getTitle());
         holder.getLocation().setText(data.getUser().getAddress());
         holder.getUsername().setText(data.getUser().getName());
-        holder.getPrice().setText(new DecimalFormat("###,###").format(Integer.parseInt(data.getPrice()))+"원");
-        holder.getCntComment().setText(" "+new DecimalFormat("###,###").format(data.getComment().size()));
-        holder.getCntLike().setText(" "+new DecimalFormat("###,###").format(data.getLike().size()));
+        if (data.getState().equals("1")) {
+            holder.getListCurrentTradeState().setText("판매완료");
+        } else if (data.getState().equals("0")) {
+            holder.getListCurrentTradeState().setText("판매중");
+        }
+        holder.getPrice().setText(new DecimalFormat("###,###").format(Integer.parseInt(data.getPrice())) + "원");
+        holder.getCntComment().setText(" " + new DecimalFormat("###,###").format(data.getComment().size()));
+        holder.getCntLike().setText(" " + new DecimalFormat("###,###").format(data.getLike().size()));
         holder.setId(data.getId());
     }
 

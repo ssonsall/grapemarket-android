@@ -87,8 +87,8 @@ public class MyLocationSetting extends AppCompatActivity {
             mWebSettings.setDomStorageEnabled(true); // 로컬저장소 허용 여부
             CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.setAcceptCookie(true);
-            cookieManager.setCookie("https://192.168.43.40:8443/map/android/popup", Session.currentUserInfo.getJSessionId());
-            mWebView.loadUrl("https://192.168.43.40:8443/map/android/popup"); // 웹뷰에 표시할 웹사이트 주소, 웹뷰 시작
+            cookieManager.setCookie(Connect2Server.getIpAddress() + "/map/android/popup", Session.currentUserInfo.getJSessionId());
+            mWebView.loadUrl(Connect2Server.getIpAddress() + "/map/android/popup"); // 웹뷰에 표시할 웹사이트 주소, 웹뷰 시작
         } catch (Exception e) {
             Log.d("addressTest", e.toString());
         }
@@ -98,6 +98,7 @@ public class MyLocationSetting extends AppCompatActivity {
     public void btnAddressSaveClicked(View v) {
         new AsyncTask<Void, Boolean, Boolean>() {
             CustomAnimationDialog podoLoading = new CustomAnimationDialog(MyLocationSetting.this);
+
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -211,6 +212,7 @@ public class MyLocationSetting extends AppCompatActivity {
         try {
             new AsyncTask<Void, UserLocationSetting, UserLocationSetting>() {
                 CustomAnimationDialog podoLoading = new CustomAnimationDialog(MyLocationSetting.this);
+
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();

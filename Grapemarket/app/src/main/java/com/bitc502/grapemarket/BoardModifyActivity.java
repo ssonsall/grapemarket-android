@@ -114,7 +114,7 @@ public class BoardModifyActivity extends AppCompatActivity {
 
     }
 
-    public void modify_spinner_arrow_btn_clicked(View v){
+    public void modify_spinner_arrow_btn_clicked(View v) {
         write_category.performClick();
     }
 
@@ -306,6 +306,7 @@ public class BoardModifyActivity extends AppCompatActivity {
     public void setSavedBoardDetailData() {
         new AsyncTask<Void, Boolean, BoardForDetail>() {
             CustomAnimationDialog podoLoading = new CustomAnimationDialog(BoardModifyActivity.this);
+
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -358,7 +359,7 @@ public class BoardModifyActivity extends AppCompatActivity {
                 }
                 write_title.setText(result.getTitle());
                 //스피너 엔트리 세팅하면서 어떤 곳은 전체, 인기매물 있고 없고 이런거 차이로 넘버링 차이 발생
-                write_category.setSelection(Integer.parseInt(result.getCategory()) - 3);
+                write_category.setSelection(Integer.parseInt(result.getCategory()) - 2);
                 write_price.setText(result.getPrice());
                 write_content.setText(result.getContent());
                 podoLoading.dismiss();
@@ -477,6 +478,7 @@ public class BoardModifyActivity extends AppCompatActivity {
     public void btnWriteComplete(View v) {
         new AsyncTask<Void, Integer, Boolean>() {
             CustomAnimationDialog podoLoading = new CustomAnimationDialog(BoardModifyActivity.this);
+
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();

@@ -90,7 +90,7 @@ public class ChattingRoomActivity extends AppCompatActivity {
                         //OKHTTP3
                         Request requestForImage = new Request.Builder()
                                 .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                                .url("https://192.168.43.40:8443/upload/" + chattingImageUrl)
+                                .url(Connect2Server.getIpAddress() + "/upload/" + chattingImageUrl)
                                 .get()
                                 .build();
                         OkHttpClient clientForImage = Connect2Server.getUnsafeOkHttpClient();
@@ -169,8 +169,8 @@ public class ChattingRoomActivity extends AppCompatActivity {
             CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.setAcceptCookie(true);
 
-            cookieManager.setCookie("https://192.168.43.40:8443/chat/android/room/enter/" + chattingRoomId, Session.currentUserInfo.getJSessionId());
-            mWebView.loadUrl("https://192.168.43.40:8443/chat/android/room/enter/" + chattingRoomId);
+            cookieManager.setCookie(Connect2Server.getIpAddress() + "/chat/android/room/enter/" + chattingRoomId, Session.currentUserInfo.getJSessionId());
+            mWebView.loadUrl(Connect2Server.getIpAddress() + "/chat/android/room/enter/" + chattingRoomId);
         } catch (Exception e) {
             Log.d("chattingroom", e.toString());
         }

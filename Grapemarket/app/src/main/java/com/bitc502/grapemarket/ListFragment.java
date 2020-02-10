@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,6 +23,7 @@ import com.bitc502.grapemarket.dialog.CustomRangeSetDialog;
 import com.bitc502.grapemarket.model.BoardForList;
 import com.bitc502.grapemarket.recycler.BoardListAdapter;
 import com.bitc502.grapemarket.singleton.CurrentRangeForListFragment;
+import com.bitc502.grapemarket.singleton.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,18 +36,22 @@ public class ListFragment extends Fragment {
     private Integer pageNumber,range;
     private List<BoardForList> boardForLists;
     private TextView btnSetRange;
+    private SwipeRefreshLayout listSwipeRefresh;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("crazy", "ListFragment !!!!");
         View v = inflater.inflate(R.layout.activity_list, container, false);
+
         listContext = getContext();
         pageNumber = 0;
+
         range = CurrentRangeForListFragment.getInstance().getCurrentRangeInteger();
         boardForLists = new ArrayList<>();
 
         //Recycler View 가져오기
+        listSwipeRefresh = v.findViewById(R.id.list_refresh);
         boardListRecylerView = v.findViewById(R.id.board_list);
 
         //Fragment에서 Toolbar는 MotherActivity가 들고있기때문에 아래와 같이 찾아와야 한다.
@@ -68,6 +74,15 @@ public class ListFragment extends Fragment {
                     pageNumber++;
                     loadingExtraData();
                 }
+            }
+        });
+
+        //스와이프 리프레시(당겨서 새로고침)
+        listSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setListFragmentData();
+                listSwipeRefresh.setRefreshing(false);
             }
         });
         return v;
@@ -158,7 +173,7 @@ public class ListFragment extends Fragment {
 
                 boardListRecylerView.setLayoutManager(linearLayoutManager);
 
-                boardListAdapter = new BoardListAdapter();
+                boardListAdapter = new BoardListAdapter(listContext);
                 boardListAdapter.setBoardList(boardForLists);
 
                 boardListRecylerView.setAdapter(boardListAdapter);

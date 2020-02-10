@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bitc502.grapemarket.connect2server.Connect2Server;
+import com.bitc502.grapemarket.singleton.Session;
+
 public class MySettingFragment extends Fragment {
     private Context mysettingContext;
     private TextView rangeSet;
@@ -43,10 +46,14 @@ public class MySettingFragment extends Fragment {
     }
     //거래내역
     public void btnMyTradeLogClicked(View v){
-
+        Intent intent = new Intent(mysettingContext,TradeLogActivity.class);
+        startActivity(intent);
     }
     //로그아웃
     public void btnLogoutClicked(View v){
-
+        Session.currentUserInfo.setJSessionId("");
+        Session.currentUserInfo.setUser(null);
+        Intent intent = new Intent(getContext(),MainActivity.class);
+        startActivity(intent);
     }
 }

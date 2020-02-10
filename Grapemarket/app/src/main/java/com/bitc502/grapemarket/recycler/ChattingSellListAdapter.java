@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitc502.grapemarket.R;
@@ -38,8 +39,10 @@ import okhttp3.Response;
 public class ChattingSellListAdapter extends RecyclerView.Adapter<ChattingSellListHolder> {
     private ChatList chatList;
     private Context context;
-    public ChattingSellListAdapter(Context context){
+    private Fragment parentFragment;
+    public ChattingSellListAdapter(Context context, Fragment parentFragment){
         this.context = context;
+        this.parentFragment = parentFragment;
     }
     @NonNull
     @Override
@@ -48,7 +51,7 @@ public class ChattingSellListAdapter extends RecyclerView.Adapter<ChattingSellLi
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.chatting_list_items, parent, false);
 
-        ChattingSellListHolder holder = new ChattingSellListHolder(view,context);
+        ChattingSellListHolder holder = new ChattingSellListHolder(view,context,parentFragment);
         ImageView iv = view.findViewById(R.id.chattingListImage);
         Drawable drawable = parent.getContext().getDrawable(R.drawable.round_imageview);
         iv.setBackground(drawable);

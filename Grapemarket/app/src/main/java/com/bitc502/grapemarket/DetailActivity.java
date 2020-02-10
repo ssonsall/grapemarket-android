@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,6 +39,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView title;
     private TextView category;
     private TextView price;
+    private TextView currentTradeState;
     private TextView content;
     private Context detailContext;
     private BoardDetailImageAdapter boardDetailImageAdapter;
@@ -54,6 +55,7 @@ public class DetailActivity extends AppCompatActivity {
     private LinearLayout sellerMenu, buyerMenu;
     private View commentSpaceView1, commentSpaceView2, commentSpaceView3, commentSpaceView4, commentSpaceView5;
     private ImageView btnEmptyHeart, btnHeart;
+    private Button btnTradeComplete,btnTradeCancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,9 @@ public class DetailActivity extends AppCompatActivity {
         buyerMenu = findViewById(R.id.detail_buyer_menu);
         btnEmptyHeart = findViewById(R.id.detail_empty_heart);
         btnHeart = findViewById(R.id.detail_heart);
-
+        currentTradeState = findViewById(R.id.currentTradeState);
+        btnTradeComplete = findViewById(R.id.btnDetailCompleteTrade);
+        btnTradeCancel = findViewById(R.id.btnDetailCancelTrade);
         noComment = findViewById(R.id.no_comment);
         comment1 = findViewById(R.id.comment_1);
         comment2 = findViewById(R.id.comment_2);
@@ -122,10 +126,18 @@ public class DetailActivity extends AppCompatActivity {
         setDetailData();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(detailContext, MotherActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     public void btnEmptyHeartClicked(View v) {
         //좋아요 설정
         new AsyncTask<Void, Boolean, Likes>() {
             CustomAnimationDialog podoLoading = new CustomAnimationDialog(DetailActivity.this);
+
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -145,12 +157,12 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Likes result) {
                 super.onPostExecute(result);
-                if(result != null) {
+                if (result != null) {
                     btnEmptyHeart.setVisibility(View.GONE);
                     btnHeart.setVisibility(View.VISIBLE);
                     boardForDetail.getLike().add(result);
-                }else{
-                    Toast.makeText(detailContext,"좋아요 상태 업데이트 실패",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(detailContext, "좋아요 상태 업데이트 실패", Toast.LENGTH_LONG).show();
                 }
                 podoLoading.dismiss();
             }
@@ -159,11 +171,12 @@ public class DetailActivity extends AppCompatActivity {
 
     public void btnHeartClicked(View v) {
         //좋아요 해제
-        for(int i = 0 ; i < boardForDetail.getLike().size(); i++){
-            if(boardForDetail.getLike().get(i).getUser().getId() == Session.currentUserInfo.getUser().getId()){
+        for (int i = 0; i < boardForDetail.getLike().size(); i++) {
+            if (boardForDetail.getLike().get(i).getUser().getId() == Session.currentUserInfo.getUser().getId()) {
                 int index = i;
                 new AsyncTask<Void, Boolean, Boolean>() {
                     CustomAnimationDialog podoLoading = new CustomAnimationDialog(DetailActivity.this);
+
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
@@ -183,12 +196,12 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     protected void onPostExecute(Boolean result) {
                         super.onPostExecute(result);
-                        if(result) {
+                        if (result) {
                             btnHeart.setVisibility(View.GONE);
                             btnEmptyHeart.setVisibility(View.VISIBLE);
                             boardForDetail.getLike().remove(index);
-                        }else{
-                            Toast.makeText(detailContext,"좋아요 상태 업데이트 실패",Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(detailContext, "좋아요 상태 업데이트 실패", Toast.LENGTH_LONG).show();
                         }
 
                         podoLoading.dismiss();
@@ -199,7 +212,9 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void btnToolbarBack(View v) {
-        super.onBackPressed();
+        Intent intent = new Intent(detailContext, MotherActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 
@@ -253,9 +268,45 @@ public class DetailActivity extends AppCompatActivity {
         }.execute();
     }
 
+    //판매취소
+    public void btnDetailCancelTrade(View v){
+        new AsyncTask<Void, Boolean, Boolean>() {
+            CustomAnimationDialog podoLoading = new CustomAnimationDialog(DetailActivity.this);
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                podoLoading.show();
+            }
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                return Connect2Server.tradeCancel(boardId);
+            }
+
+            @Override
+            protected void onProgressUpdate(Boolean... values) {
+                super.onProgressUpdate(values);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+                podoLoading.dismiss();
+                if(result){
+                    Intent intent = new Intent(detailContext, MotherActivity.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(detailContext,"판매취소 실패",Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+    }
+
     //거래완료
     public void btnDetailCompleteTrade(View v) {
-
+        Intent intent = new Intent(detailContext, BoardBuyerListActivity.class);
+        intent.putExtra("boardId", boardId);
+        startActivity(intent);
     }
 
     //채팅으로 거래하기
@@ -335,12 +386,24 @@ public class DetailActivity extends AppCompatActivity {
             protected void onPostExecute(BoardForDetail result) {
                 super.onPostExecute(result);
                 boardForDetail = result;
+                if (result.getState().equals("1")) {
+                    currentTradeState.setText("판매완료");
+                    btnTradeComplete.setClickable(false);
+                    btnTradeComplete.setTextColor(getResources().getColor(R.color.colorGray));
+                    btnTradeCancel.setClickable(false);
+                    btnTradeCancel.setTextColor(getResources().getColor(R.color.colorGray));
+                } else if (result.getState().equals("0")) {
+                    currentTradeState.setText("판매중");
+                }else if (result.getState().equals("-1")) {
+                    currentTradeState.setText("판매취소");
+                }
+
                 int likeSize = result.getLike().size();
                 for (int i = 0; i < likeSize; i++) {
-                    if(result.getLike().get(i).getUser().getId() == Session.currentUserInfo.getUser().getId()){
+                    if (result.getLike().get(i).getUser().getId() == Session.currentUserInfo.getUser().getId()) {
                         btnEmptyHeart.setVisibility(View.GONE);
                         btnHeart.setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         btnHeart.setVisibility(View.GONE);
                         btnEmptyHeart.setVisibility(View.VISIBLE);
                     }
@@ -526,8 +589,10 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public String getCategoryFullname(String categoryNumber) {
-        if (categoryNumber.equals("3")) {
-            return "디지털/가전";
+        if (categoryNumber.equals("2")) {
+            return "생활가전";
+        } else if (categoryNumber.equals("3")) {
+            return "디지털";
         } else if (categoryNumber.equals("4")) {
             return "가구/인테리어";
         } else if (categoryNumber.equals("5")) {

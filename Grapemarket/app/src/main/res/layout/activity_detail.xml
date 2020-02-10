@@ -93,17 +93,18 @@
                     android:textColor="@color/colorWhite"
                     android:textSize="40dp"
                     android:textStyle="bold" />
+
                 <ImageView
                     android:id="@+id/detail_empty_heart"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/empty_heart"
-                    android:scaleType="centerCrop"
                     android:clickable="true"
                     android:onClick="btnEmptyHeartClicked"
-                    android:visibility="visible"/>
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/empty_heart"
+                    android:visibility="visible" />
 
                 <ImageView
                     android:id="@+id/detail_heart"
@@ -113,20 +114,43 @@
                     android:layout_marginRight="10dp"
                     android:clickable="true"
                     android:onClick="btnHeartClicked"
-                    android:src="@drawable/heart_removebg"
                     android:scaleType="centerCrop"
-                    android:visibility="gone"/>
+                    android:src="@drawable/heart_removebg"
+                    android:visibility="gone" />
 
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/price"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textColor="@color/colorWhite"
-                android:textSize="25dp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" · "
+                    android:textColor="@color/colorWhite"
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:id="@+id/currentTradeState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/colorWhite"
+                    android:textSize="25dp" />
+
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/category"
@@ -660,12 +684,21 @@
             android:textColor="@color/colorWhite" />
 
         <Button
+            android:id="@+id/btnDetailCancelTrade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:onClick="btnDetailCancelTrade"
+            android:text="판매취소"
+            android:textColor="@color/colorWhite" />
+
+        <Button
             android:id="@+id/btnDetailCompleteTrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_background"
             android:onClick="btnDetailCompleteTrade"
-            android:text="거래완료"
+            android:text="판매완료"
             android:textColor="@color/colorWhite" />
 
     </LinearLayout>

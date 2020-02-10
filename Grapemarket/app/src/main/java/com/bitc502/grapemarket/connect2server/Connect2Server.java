@@ -8,6 +8,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.bitc502.grapemarket.model.Likes;
+import com.bitc502.grapemarket.model.TradeLogBuy;
+import com.bitc502.grapemarket.model.TradeLogList;
+import com.bitc502.grapemarket.model.TradeLogSell;
+import com.bitc502.grapemarket.model.TradeState;
+import com.bitc502.grapemarket.model.TradeStateForBuyerList;
 import com.bitc502.grapemarket.singleton.Session;
 import com.bitc502.grapemarket.model.Board;
 import com.bitc502.grapemarket.model.BoardForDetail;
@@ -46,29 +51,127 @@ import okhttp3.TlsVersion;
 
 
 public class Connect2Server {
-    private static String ip_address = "https://192.168.43.40:8443";
-    private static final String LOGIN = ip_address + "/user/loginProc";
-    private static final String LOGIN_USER_INFO = ip_address + "/android/getUserInfo";
-    private static final String JOIN = ip_address + "/android/join";
-    private static final String All_LIST = ip_address + "/android/allList";
-    private static final String ALL_LIST_PAGEABLE = ip_address + "/android/allListPageable";
-    private static final String ALL_LIST_PAGEABLE_WITH_RANGE = ip_address + "/android/allListPageableWithRange";
-    private static final String DETAIL = ip_address + "/android/detail/";
-    private static final String WRITE = ip_address + "/android/write";
-    private static final String COMMENT_WRITE = ip_address + "/android/commentWrite";
-    private static final String USER_ADDRESS_SETTING = ip_address + "/android/saveUserAddress";
-    private static final String GET_SAVED_ADDRESS = ip_address + "/android/getSavedAddress";
-    private static final String SAVE_ADDRESS_AUTH = ip_address + "/android/saveAddressAuth";
-    private static final String SEARCH_WITH_RANGE = ip_address + "/android/searchWithRange";
-    private static final String CHAT_LIST = ip_address + "/android/chatList";
-    private static final String CURRENT_MY_PROFILE = ip_address + "/android/currentmyinfo";
-    private static final String CHANGE_PASSWORD = ip_address + "/android/changepassword";
-    private static final String CHANGE_PROFILE = ip_address + "/android/changeprofile";
-    private static final String DELETE_BOARD = ip_address + "/android/deleteBoard/";
-    private static final String MODIFY_BOARD = ip_address + "/android/modifyBoard";
-    private static final String REQUEST_CHATTING = ip_address + "/android/requestChat";
-    private static final String DELETE_LIKE = ip_address + "/android/deleteLike";
-    private static final String SAVE_LIKE = ip_address + "/android/saveLike";
+    private static final String IP_ADDRESS = "https://192.168.43.40:8443";
+    private static final String LOGIN = IP_ADDRESS + "/user/loginProc";
+    private static final String LOGIN_USER_INFO = IP_ADDRESS + "/android/getUserInfo";
+    private static final String JOIN = IP_ADDRESS + "/android/join";
+    private static final String All_LIST = IP_ADDRESS + "/android/allList";
+    private static final String ALL_LIST_PAGEABLE = IP_ADDRESS + "/android/allListPageable";
+    private static final String ALL_LIST_PAGEABLE_WITH_RANGE = IP_ADDRESS + "/android/allListPageableWithRange";
+    private static final String DETAIL = IP_ADDRESS + "/android/detail/";
+    private static final String WRITE = IP_ADDRESS + "/android/write";
+    private static final String COMMENT_WRITE = IP_ADDRESS + "/android/commentWrite";
+    private static final String USER_ADDRESS_SETTING = IP_ADDRESS + "/android/saveUserAddress";
+    private static final String GET_SAVED_ADDRESS = IP_ADDRESS + "/android/getSavedAddress";
+    private static final String SAVE_ADDRESS_AUTH = IP_ADDRESS + "/android/saveAddressAuth";
+    private static final String SEARCH_WITH_RANGE = IP_ADDRESS + "/android/searchWithRange";
+    private static final String CHAT_LIST = IP_ADDRESS + "/android/chatList";
+    private static final String CURRENT_MY_PROFILE = IP_ADDRESS + "/android/currentmyinfo";
+    private static final String CHANGE_PASSWORD = IP_ADDRESS + "/android/changepassword";
+    private static final String CHANGE_PROFILE = IP_ADDRESS + "/android/changeprofile";
+    private static final String DELETE_BOARD = IP_ADDRESS + "/android/deleteBoard/";
+    private static final String MODIFY_BOARD = IP_ADDRESS + "/android/modifyBoard";
+    private static final String REQUEST_CHATTING = IP_ADDRESS + "/android/requestChat";
+    private static final String DELETE_LIKE = IP_ADDRESS + "/android/deleteLike";
+    private static final String SAVE_LIKE = IP_ADDRESS + "/android/saveLike";
+    private static final String BUYER_LIST = IP_ADDRESS + "/android/getBuyerList";
+    private static final String TRADE_COMPLETE = IP_ADDRESS + "/android/tradeComplete";
+    private static final String TRADE_LIST = IP_ADDRESS + "/android/tradeList";
+    private static final String BUY_COMPLETE = IP_ADDRESS + "/android/buyComplete";
+    private static final String TRADE_CANCEL = IP_ADDRESS + "/android/tradeCancel";
+    private static final String OUT_CHATTING = IP_ADDRESS + "/android/outChat";
+
+    public static String getIpAddress(){
+        return IP_ADDRESS;
+    }
+
+    //채팅방 나가기
+    public static Boolean outChatting(Integer chattingId, String buyerOrSeller) {
+        try {
+            //OKHTTP3
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("roomId", chattingId.toString())
+                    .addFormDataPart("info", buyerOrSeller)
+                    .build();
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(OUT_CHATTING)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            if (res.equals("success")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return false;
+        }
+    }
+
+    //판매취소
+    public static Boolean tradeCancel(Integer boardId) {
+        try {
+            //OKHTTP3
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("boardId", boardId.toString())
+                    .build();
+
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(TRADE_CANCEL)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            if (res.equals("success")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return false;
+        }
+    }
+
+    //구매완료
+    public static Boolean buyComplete(Integer boardId) {
+        try {
+            //OKHTTP3
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("boardId", boardId.toString())
+                    .build();
+
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(BUY_COMPLETE)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            if (res.equals("success")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return false;
+        }
+    }
+
 
     //Login
     public static Boolean sendLoginInfoToServer(String username, String password) {
@@ -240,7 +343,7 @@ public class Connect2Server {
             boardForDetail.setCurrentImage5(board.getImage5());
 
             //이미지 세팅(작성자 프로필 사진 및 상품 이미지)
-            //이미지 땡겨오기 위한 HttpURLConnection
+            //이미지 땡겨오기
             Bitmap bitmap = null;
             for (int i = 0; i < 5; i++) {
                 if (i == 0) { // 작성자 유저프로필 땡겨오기
@@ -442,7 +545,9 @@ public class Connect2Server {
         try {
             int category = 0;
             //카테고리 정보 숫자로 세팅
-            if (categoryString.equals("디지털/가전")) {
+            if(categoryString.equals("생활가전")){
+                category = 2;
+            } else if (categoryString.equals("디지털")) {
                 category = 3;
             } else if (categoryString.equals("가구/인테리어")) {
                 category = 4;
@@ -732,6 +837,212 @@ public class Connect2Server {
         }
     }
 
+    //구매자 리스트 가져오기
+    public static List<TradeStateForBuyerList> getBuyerList(Integer boardId) {
+        //BUYER_LIST
+        try {
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("boardId", boardId.toString())
+                    .build();
+
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(BUYER_LIST)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+
+            Type collectionType = new TypeToken<List<TradeState>>() {
+            }.getType();
+            List<TradeState> responseBuyerList = new Gson().fromJson(res, collectionType);
+            List<TradeStateForBuyerList> tradeStateForBuyerLists = new ArrayList<>();
+            for (int i = 0; i < responseBuyerList.size(); i++) {
+                TradeStateForBuyerList tradeStateForBuyer = new TradeStateForBuyerList();
+                tradeStateForBuyer.setBoard(responseBuyerList.get(i).getBoard());
+                tradeStateForBuyer.setCreateDate(responseBuyerList.get(i).getCreateDate());
+                tradeStateForBuyer.setUpdateDate(responseBuyerList.get(i).getUpdateDate());
+                tradeStateForBuyer.setId(responseBuyerList.get(i).getId());
+                tradeStateForBuyer.setState(responseBuyerList.get(i).getState());
+                Log.d("tradetest", "스테이트 >> " + responseBuyerList.get(i).getState());
+                tradeStateForBuyer.setUser(responseBuyerList.get(i).getUser());
+                Log.d("tradetest", "네임 >> " + responseBuyerList.get(i).getUser().getName());
+                tradeStateForBuyerLists.add(tradeStateForBuyer);
+            }
+
+            //UserProfile 이미지 땡겨오기
+            for (int i = 0; i < tradeStateForBuyerLists.size(); i++) {
+                Bitmap bitmap = null;
+                //OKHTTP3
+                Request requestForImage = new Request.Builder()
+                        .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                        .url("https://192.168.43.40:8443/upload/" + tradeStateForBuyerLists.get(i).getUser().getUserProfile())
+                        .get()
+                        .build();
+                OkHttpClient clientForImage = getUnsafeOkHttpClient();
+                Response responseForImage = clientForImage.newCall(requestForImage).execute();
+                InputStream inputStream = responseForImage.body().byteStream();
+                bitmap = BitmapFactory.decodeStream(inputStream);
+                tradeStateForBuyerLists.get(i).setBuyerListUserProfile(bitmap);
+            }
+
+            Log.d("tradetest", tradeStateForBuyerLists.get(0).getUser().getName());
+
+            return tradeStateForBuyerLists;
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return null;
+        }
+    }
+
+    //거래내역 (일단 buy로 받아서 (sell과 구조가 같다 이름만 다름))
+    //아 조졌네 더럽게 만들어졌네...
+    public static TradeLogList getTradeLog() {
+        try {
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(TRADE_LIST)
+                    .get()
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+
+            Type collectionType = new TypeToken<List<TradeState>>() {
+            }.getType();
+            List<TradeState> tradeStateList = new Gson().fromJson(res, collectionType);
+
+            Log.d("tradelogtest", tradeStateList.size() + "");
+
+            List<TradeStateForBuyerList> tradeStateForBuyerLists = new ArrayList<>();
+            List<TradeLogBuy> tradeLogBuyList = new ArrayList<>();
+            List<TradeLogSell> tradeLogSellList = new ArrayList<>();
+
+            int tradeStateListSize = tradeStateList.size();
+
+
+            //이미지 땡겨오자
+            Bitmap bitmap = null;
+            for (int i = 0; i < tradeStateListSize; i++) {
+
+                TradeStateForBuyerList tradeStateForBuyerList = new TradeStateForBuyerList();
+
+                //OKHTTP3
+                Request requestForImage = new Request.Builder()
+                        .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                        .url("https://192.168.43.40:8443/upload/" + tradeStateList.get(i).getBoard().getImage1())
+                        .get()
+                        .build();
+                OkHttpClient clientForImage = getUnsafeOkHttpClient();
+                Response responseForImage = clientForImage.newCall(requestForImage).execute();
+                InputStream inputStream = responseForImage.body().byteStream();
+                Log.d("ttt111", inputStream.toString());
+                bitmap = BitmapFactory.decodeStream(inputStream);
+                tradeStateForBuyerList.setBuyerListUserProfile(bitmap);
+                tradeStateForBuyerList.setUser(tradeStateList.get(i).getUser());
+                tradeStateForBuyerList.setState(tradeStateList.get(i).getState());
+                tradeStateForBuyerList.setId(tradeStateList.get(i).getId());
+                tradeStateForBuyerList.setUpdateDate(tradeStateList.get(i).getUpdateDate());
+                tradeStateForBuyerList.setCreateDate(tradeStateList.get(i).getCreateDate());
+                tradeStateForBuyerList.setBoard(tradeStateList.get(i).getBoard());
+                tradeStateForBuyerLists.add(tradeStateForBuyerList);
+
+            }
+
+            for (int i = 0; i < tradeStateListSize; i++) {
+                if (tradeStateForBuyerLists.get(i).getState().equals("구매중") || tradeStateForBuyerLists.get(i).getState().equals("구매완료")) {
+
+                    TradeLogBuy tradeLogBuy = new TradeLogBuy();
+
+//                    //OKHTTP3
+//                    Request requestForImage = new Request.Builder()
+//                            .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+//                            .url("https://192.168.43.40:8443/upload/" + tradeStateList.get(i).getBoard().getImage1())
+//                            .get()
+//                            .build();
+//                    OkHttpClient clientForImage = getUnsafeOkHttpClient();
+//                    Response responseForImage = clientForImage.newCall(requestForImage).execute();
+//                    InputStream inputStream = responseForImage.body().byteStream();
+//                    bitmap = BitmapFactory.decodeStream(inputStream);
+
+                    tradeLogBuy.setTradeLogoBoardImage(tradeStateForBuyerLists.get(i).getBuyerListUserProfile());
+                    tradeLogBuy.setBoard(tradeStateForBuyerLists.get(i).getBoard());
+                    tradeLogBuy.setCreateDate(tradeStateForBuyerLists.get(i).getCreateDate());
+                    tradeLogBuy.setId(tradeStateForBuyerLists.get(i).getId());
+                    tradeLogBuy.setState(tradeStateForBuyerLists.get(i).getState());
+                    tradeLogBuy.setUser(tradeStateForBuyerLists.get(i).getUser());
+                    tradeLogBuyList.add(tradeLogBuy);
+                } else if (tradeStateForBuyerLists.get(i).getState().equals("판매중") || tradeStateForBuyerLists.get(i).getState().equals("판매완료") || tradeStateForBuyerLists.get(i).getState().equals("판매취소")) {
+                    TradeLogSell tradeLogSell = new TradeLogSell();
+
+//                    //OKHTTP3
+//                    Request requestForImage = new Request.Builder()
+//                            .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+//                            .url("https://192.168.43.40:8443/upload/" + tradeStateList.get(i).getBoard().getImage1())
+//                            .get()
+//                            .build();
+//                    OkHttpClient clientForImage = getUnsafeOkHttpClient();
+//                    Response responseForImage = clientForImage.newCall(requestForImage).execute();
+//                    InputStream inputStream = responseForImage.body().byteStream();
+//                    bitmap = BitmapFactory.decodeStream(inputStream);
+
+                    tradeLogSell.setTradeLogoBoardImage(tradeStateForBuyerLists.get(i).getBuyerListUserProfile());
+                    tradeLogSell.setBoard(tradeStateForBuyerLists.get(i).getBoard());
+                    tradeLogSell.setCreateDate(tradeStateForBuyerLists.get(i).getCreateDate());
+                    tradeLogSell.setId(tradeStateForBuyerLists.get(i).getId());
+                    tradeLogSell.setState(tradeStateForBuyerLists.get(i).getState());
+                    tradeLogSell.setUser(tradeStateForBuyerLists.get(i).getUser());
+                    tradeLogSellList.add(tradeLogSell);
+                }
+            }
+
+            TradeLogList tradeLogList = new TradeLogList();
+            tradeLogList.setTradeLogBuyList(tradeLogBuyList);
+            tradeLogList.setTradeLogSellList(tradeLogSellList);
+
+            Log.d("tradelogtest", "최종 리스트 갯수 >> " + tradeLogList.getTradeLogBuyList() + tradeLogList.getTradeLogSellList());
+            return tradeLogList;
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return null;
+        }
+    }
+
+    //판매완료 업데이트
+    public static Boolean updateTradeComplete(Integer boardId, Integer buyerId) {
+        try {
+
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("boardId", boardId.toString())
+                    .addFormDataPart("buyerId", buyerId.toString())
+                    .build();
+
+            Request request = new Request.Builder()
+                    .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
+                    .url(TRADE_COMPLETE)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient client = getUnsafeOkHttpClient();
+            Response response = client.newCall(request).execute();
+            String res = response.body().string();
+            if (res.equals("success")) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (Exception e) {
+            Log.d("myerror", e.toString());
+            return false;
+        }
+    }
+
     public static Boolean deleteLike(Integer likeId) {
         try {
             RequestBody requestBody = new MultipartBody.Builder()
@@ -766,9 +1077,9 @@ public class Connect2Server {
             //카테고리 정보 숫자로 세팅
             if (categoryString.equals("전체")) {
                 category = 1;
-            } else if (categoryString.equals("인기매물")) {
+            } else if (categoryString.equals("생활가전")) {
                 category = 2;
-            } else if (categoryString.equals("디지털/가전")) {
+            } else if (categoryString.equals("디지털")) {
                 category = 3;
             } else if (categoryString.equals("가구/인테리어")) {
                 category = 4;
@@ -1011,7 +1322,9 @@ public class Connect2Server {
 
             int category = 0;
             //카테고리 정보 숫자로 세팅
-            if (categoryString.equals("디지털/가전")) {
+            if (categoryString.equals("생활가전")) {
+                category = 2;
+            } else if (categoryString.equals("디지털")) {
                 category = 3;
             } else if (categoryString.equals("가구/인테리어")) {
                 category = 4;

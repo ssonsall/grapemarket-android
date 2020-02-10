@@ -31,6 +31,8 @@ public class BoardDataListHolder extends RecyclerView.ViewHolder {
     private TextView cntComment;
     private TextView cntLike;
     private Context context;
+    private TextView listCurrentTradeState;
+    private TextView listDot;
 
     private int id;
 
@@ -45,6 +47,9 @@ public class BoardDataListHolder extends RecyclerView.ViewHolder {
         price = itemView.findViewById(R.id.price);
         cntComment = itemView.findViewById(R.id.cntComment);
         cntLike = itemView.findViewById(R.id.cntLike);
+        listDot = itemView.findViewById(R.id.list_dot);
+        listCurrentTradeState = itemView.findViewById(R.id.list_current_tradeState);
+
         itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
