@@ -1272,12 +1272,29 @@ public class Connect2Server {
     }
 
     //프로필 업데이트
-    public static Boolean updateProfile(User user) {
+    public static Boolean updateProfile(User user, String currentUserProfile) {
         try {
+            Boolean dummyCreated = false;
+            final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/*");
+
+            File sourceFile1 = null;
+
+            String fileName1 = "";
+            sourceFile1 = new File(user.getUserProfile());
+            if(sourceFile1.exists()) {
+                fileName1 = user.getUserProfile().substring(user.getUserProfile().lastIndexOf("/") + 1);
+            }else{
+                user.setUserProfile(currentUserProfile);
+                sourceFile1 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "userprofile.podo");
+                sourceFile1.createNewFile();
+                dummyCreated = true;
+            }
+
             //OKHTTP3
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("user", new Gson().toJson(user))
+                    .addFormDataPart("userProfile", fileName1, RequestBody.create(MEDIA_TYPE_PNG, sourceFile1))
                     .build();
 
             Request request = new Request.Builder()
@@ -1289,6 +1306,11 @@ public class Connect2Server {
             OkHttpClient client = getUnsafeOkHttpClient();
             Response response = client.newCall(request).execute();
             String res = response.body().string();
+
+            if(dummyCreated) {
+                sourceFile1.delete();
+            }
+
             if (res.equals("success")) {
                 return true;
             } else {

@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
 import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
@@ -38,6 +39,7 @@ public class MyProfileActivity extends AppCompatActivity {
     private Context myProfileContext;
     private Button btnChangeEmail, btnChangePhone;
     private User user;
+    private String currentUserProfile;
 
     PermissionsChecker checker;
     private final String[] PERMISSIONS_READ_STORAGE = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
@@ -171,7 +173,7 @@ public class MyProfileActivity extends AppCompatActivity {
 
             @Override
             protected Boolean doInBackground(Void... voids) {
-                return Connect2Server.updateProfile(user);
+                return Connect2Server.updateProfile(user, currentUserProfile);
             }
 
             @Override
@@ -183,6 +185,11 @@ public class MyProfileActivity extends AppCompatActivity {
             protected void onPostExecute(Boolean result) {
                 super.onPostExecute(result);
                 podoLoading.dismiss();
+                if(result){
+                    Toast.makeText(myProfileContext,"프로필 업데이트 성공",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(myProfileContext,"프로필 업데이트 실패",Toast.LENGTH_LONG).show();
+                }
             }
 
         }.execute();
@@ -228,6 +235,7 @@ public class MyProfileActivity extends AppCompatActivity {
                 user.setEmail(currentUserInfo.getEmail());
                 user.setPhone(currentUserInfo.getPhone());
                 user.setUserProfile(currentUserInfo.getUserProfile());
+                currentUserProfile = currentUserInfo.getUserProfile();
                 podoLoading.dismiss();
             }
 
