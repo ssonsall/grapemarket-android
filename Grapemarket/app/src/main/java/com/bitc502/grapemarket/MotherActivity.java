@@ -88,14 +88,14 @@ public class MotherActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        for (Fragment fragment: getSupportFragmentManager().getFragments()) {
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             if (fragment.isVisible()) {
-                if(fragment instanceof ListFragment){
+                if (fragment instanceof ListFragment) {
                     //현재 ListFragment이면 종료
                     finishAffinity();
                     System.runFinalization();
                     System.exit(0);
-                }else{
+                } else {
                     //다른 Fragment에 있으면 ListFragment로 이동
                     FragmentTransaction transaction = fragmentManager.beginTransaction();
                     transaction.replace(R.id.main_frame, listFragment).commitAllowingStateLoss();
@@ -107,33 +107,43 @@ public class MotherActivity extends AppCompatActivity {
     }
 
     //Fragment -> Fragment 전환시 사용할 메서드
-    public void replaceFragment(Fragment fragment){
+    public void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.main_frame ,fragment).commitAllowingStateLoss();
+        transaction.replace(R.id.main_frame, fragment).commitAllowingStateLoss();
     }
 
     //Fragment 안의 버튼 세팅
-    public void btnRangeSetClicked(View v){
+    public void btnRangeSetClicked(View v) {
         listFragment.btnRangeSetClicked(v);
     }
 
-    public void btnGoAddressSetting(View v ){
-        listFragment.btnGoAddressSetting(v);
-        writeFragment.btnGoAddressSetting(v);
-        searchFragment.btnGoAddressSetting(v);
-        mySettingFragment.btnGoAddressSetting(v);
-        chattingFragment.btnGoAddressSetting(v);
+    public void btnGoAddressSetting(View v) {
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            if (fragment.isVisible()) {
+                if (fragment instanceof ListFragment) {
+                    listFragment.btnGoAddressSetting(v);
+                } else if (fragment instanceof WriteFragment) {
+                    writeFragment.btnGoAddressSetting(v);
+                } else if (fragment instanceof SearchFragment) {
+                    searchFragment.btnGoAddressSetting(v);
+                } else if (fragment instanceof MySettingFragment) {
+                    mySettingFragment.btnGoAddressSetting(v);
+                } else if (fragment instanceof ChattingFragment) {
+                    chattingFragment.btnGoAddressSetting(v);
+                }
+            }
+        }
     }
 
-    public void btnToolbarBack(View v){
-        for (Fragment fragment: getSupportFragmentManager().getFragments()) {
+    public void btnToolbarBack(View v) {
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             if (fragment.isVisible()) {
-                if(fragment instanceof ListFragment){
+                if (fragment instanceof ListFragment) {
                     //현재 ListFragment이면 종료
                     finishAffinity();
                     System.runFinalization();
                     System.exit(0);
-                }else{
+                } else {
                     //다른 Fragment에 있으면 ListFragment로 이동
                     FragmentTransaction transaction = fragmentManager.beginTransaction();
                     transaction.replace(R.id.main_frame, listFragment).commitAllowingStateLoss();
@@ -152,23 +162,35 @@ public class MotherActivity extends AppCompatActivity {
         writeFragment.btnWriteComplete(v);
     }
 
-    public void btnImgDelete1(View v){writeFragment.btnImgDelete1(v);}
+    public void btnImgDelete1(View v) {
+        writeFragment.btnImgDelete1(v);
+    }
 
-    public void btnImgDelete2(View v){writeFragment.btnImgDelete2(v);}
+    public void btnImgDelete2(View v) {
+        writeFragment.btnImgDelete2(v);
+    }
 
-    public void btnImgDelete3(View v){writeFragment.btnImgDelete3(v);}
+    public void btnImgDelete3(View v) {
+        writeFragment.btnImgDelete3(v);
+    }
 
-    public void btnImgDelete4(View v){writeFragment.btnImgDelete4(v);}
+    public void btnImgDelete4(View v) {
+        writeFragment.btnImgDelete4(v);
+    }
 
-    public void btnImgDelete5(View v){writeFragment.btnImgDelete5(v);}
+    public void btnImgDelete5(View v) {
+        writeFragment.btnImgDelete5(v);
+    }
 
-    public void write_spinner_arrow_btn_clicked(View v){writeFragment.write_spinner_arrow_btn_clicked(v);}
+    public void write_spinner_arrow_btn_clicked(View v) {
+        writeFragment.write_spinner_arrow_btn_clicked(v);
+    }
 
     public void btnProductSearchClicked(View v) {
         searchFragment.btnProductSearchClicked(v);
     }
 
-    public void search_spinner_arrow_btn_clicked(View v){
+    public void search_spinner_arrow_btn_clicked(View v) {
         searchFragment.search_spinner_arrow_btn_clicked(v);
     }
 

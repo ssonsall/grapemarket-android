@@ -123,6 +123,7 @@ public class MyLocationSetting extends AppCompatActivity {
                     Session.currentUserInfo.getUser().setAddress(address.getText().toString());
                     Session.currentUserInfo.getUser().setAddressX(Double.parseDouble(addressX.getText().toString()));
                     Session.currentUserInfo.getUser().setAddressY(Double.parseDouble(addressY.getText().toString()));
+                    Session.currentUserInfo.getUser().setAddressAuth(0);
                     Toast.makeText(myLocationSettingContext, "동네 설정 성공", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(myLocationSettingContext, "동네 설정 실패", Toast.LENGTH_LONG).show();

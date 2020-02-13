@@ -54,7 +54,7 @@ import okhttp3.TlsVersion;
 
 public class Connect2Server {
     //private static final String IP_ADDRESS = "https://192.168.43.40:8443";
-    private static final String IP_ADDRESS = "https://ec2-15-164-214-135.ap-northeast-2.compute.amazonaws.com:8443";
+    private static final String IP_ADDRESS = "https://ec2-15-164-214-186.ap-northeast-2.compute.amazonaws.com:8443";
     private static final String LOGIN = IP_ADDRESS + "/user/loginProc";
     private static final String LOGIN_USER_INFO = IP_ADDRESS + "/android/getUserInfo";
     private static final String JOIN = IP_ADDRESS + "/android/join";
