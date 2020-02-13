@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import com.bitc502.grapemarket.connect2server.Connect2Server;
 import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.model.BoardForList;
 import com.bitc502.grapemarket.recycler.BoardListAdapter;
+import com.bitc502.grapemarket.singleton.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +41,7 @@ public class SearchFragment extends Fragment {
     private BoardListAdapter boardListAdapter;
     private LinearLayoutManager linearLayoutManager;
     private ArrayAdapter spinnerAdpater;
-    private TextView rangeSet, currentRangeTv;
+    private TextView rangeSet, currentRangeTv,btnGoAddressSetting;
     private SeekBar searchSeekbar;
     private Integer range, pageNumber;
     private List<BoardForList> boardForLists;
@@ -58,6 +61,16 @@ public class SearchFragment extends Fragment {
         currentRangeTv = v.findViewById(R.id.search_current_range);
         rangeSet = getActivity().findViewById(R.id.toolbar_range_set);
         rangeSet.setVisibility(View.INVISIBLE);
+        btnGoAddressSetting = getActivity().findViewById(R.id.toolbar_go_address_setting);
+        if(TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) ||Session.currentUserInfo.getUser().getAddress().equals("")){
+            btnGoAddressSetting.setVisibility(View.VISIBLE);
+            rangeSet.setVisibility(View.GONE);
+        }else{
+            rangeSet.setVisibility(View.VISIBLE);
+            btnGoAddressSetting.setVisibility(View.GONE);
+        }
+
+
         spinnerAdpater = ArrayAdapter.createFromResource(getContext(), R.array.search_category, R.layout.spinner_dialog_layout);
         spinnerAdpater.setDropDownViewResource(R.layout.spinner_text_setting);
         searchCategory.setAdapter(spinnerAdpater);
@@ -111,6 +124,11 @@ public class SearchFragment extends Fragment {
             }
         });
         return v;
+    }
+
+    public void btnGoAddressSetting(View v){
+        Intent intent = new Intent(searchContext, MyLocationSetting.class);
+        startActivity(intent);
     }
 
     public void search_spinner_arrow_btn_clicked(View v) {

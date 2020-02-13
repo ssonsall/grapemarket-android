@@ -117,6 +117,14 @@ public class MotherActivity extends AppCompatActivity {
         listFragment.btnRangeSetClicked(v);
     }
 
+    public void btnGoAddressSetting(View v ){
+        listFragment.btnGoAddressSetting(v);
+        writeFragment.btnGoAddressSetting(v);
+        searchFragment.btnGoAddressSetting(v);
+        mySettingFragment.btnGoAddressSetting(v);
+        chattingFragment.btnGoAddressSetting(v);
+    }
+
     public void btnToolbarBack(View v){
         for (Fragment fragment: getSupportFragmentManager().getFragments()) {
             if (fragment.isVisible()) {

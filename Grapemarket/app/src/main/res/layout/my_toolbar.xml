@@ -51,6 +51,18 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="13dp"
                 android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/toolbar_go_address_setting"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="btnGoAddressSetting"
+                android:text="주소설정"
+                android:textColor="@color/colorWhite"
+                android:textSize="13dp"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 

@@ -20,10 +20,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView main_password;
     private Context mainContext;
     private String testUsername,testPassword;
-    private View systemSoftKey;
-//    final int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//            |View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//            |View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         startActivity(new Intent(this,SplashActivity2.class));
@@ -44,8 +40,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        systemSoftKey = getWindow().getDecorView();
-//        systemSoftKey.setSystemUiVisibility(uiOptions);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+        System.runFinalization();
+        System.exit(0);
     }
 
     //로그인 버튼
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 if(loginResult) {
                     intent = new Intent(getApplicationContext(), MotherActivity.class);
                     startActivity(intent);
+                    finish();
                 }else{
                     Toast.makeText(mainContext,"로그인에 실패했습니다.",Toast.LENGTH_LONG).show();
                 }
@@ -86,11 +88,16 @@ public class MainActivity extends AppCompatActivity {
         }.execute();
     }
 
+
+
+
     //회원가입 버튼
     public void btnJoinClicked(View view){
         Intent intent = new Intent(getApplicationContext(), JoinActivity.class);
         startActivity(intent);
     }
+
+
 
     //테스트 로그인
     public void btnTestLoginClicked(View v){
@@ -121,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 if(loginResult) {
                     intent = new Intent(getApplicationContext(), MotherActivity.class);
                     startActivity(intent);
+                    finish();
                 }else{
                     Toast.makeText(mainContext,"로그인에 실패했습니다.",Toast.LENGTH_LONG).show();
                 }

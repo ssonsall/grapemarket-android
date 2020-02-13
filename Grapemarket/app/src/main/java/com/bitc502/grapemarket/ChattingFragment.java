@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -24,6 +26,7 @@ import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.model.ChatList;
 import com.bitc502.grapemarket.recycler.ChattingBuyListAdapter;
 import com.bitc502.grapemarket.recycler.ChattingSellListAdapter;
+import com.bitc502.grapemarket.singleton.Session;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ChattingFragment extends Fragment {
@@ -33,7 +36,7 @@ public class ChattingFragment extends Fragment {
     private BottomNavigationView chattingListNavgationView;
     private Fragment chattingListBuyFragment = new ChattingListBuyFragment();
     private Fragment chattingListSellFragment = new ChattingListSellFragment();
-    private TextView rangeSet;
+    private TextView rangeSet,btnGoAddressSetting;
     private ChatList chatListGlobal;
     private Boolean isLoaded;
 
@@ -46,6 +49,14 @@ public class ChattingFragment extends Fragment {
         rangeSet.setVisibility(View.INVISIBLE);
         chatListGlobal = new ChatList();
         isLoaded = false;
+        btnGoAddressSetting = getActivity().findViewById(R.id.toolbar_go_address_setting);
+        if(TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) ||Session.currentUserInfo.getUser().getAddress().equals("")){
+            btnGoAddressSetting.setVisibility(View.VISIBLE);
+            rangeSet.setVisibility(View.GONE);
+        }else{
+            rangeSet.setVisibility(View.VISIBLE);
+            btnGoAddressSetting.setVisibility(View.GONE);
+        }
 
         // 첫 화면 지정
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -72,6 +83,10 @@ public class ChattingFragment extends Fragment {
         });
 
         return v;
+    }
+    public void btnGoAddressSetting(View v){
+        Intent intent = new Intent(getContext(), MyLocationSetting.class);
+        startActivity(intent);
     }
 
     public void setChatListGlobal(ChatList chatList){

@@ -9,8 +9,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +37,7 @@ public class ListFragment extends Fragment {
     private Context listContext;
     private Integer pageNumber,range;
     private List<BoardForList> boardForLists;
-    private TextView btnSetRange;
+    private TextView btnSetRange, btnGoAddressSetting;
     private SwipeRefreshLayout listSwipeRefresh;
 
     @Nullable
@@ -56,9 +58,19 @@ public class ListFragment extends Fragment {
 
         //Fragment에서 Toolbar는 MotherActivity가 들고있기때문에 아래와 같이 찾아와야 한다.
         btnSetRange = getActivity().findViewById(R.id.toolbar_range_set);
+        btnGoAddressSetting = getActivity().findViewById(R.id.toolbar_go_address_setting);
+
         btnSetRange.setText(CurrentRangeForListFragment.getInstance().getCurrentRange());
 
-        btnSetRange.setVisibility(View.VISIBLE);
+
+        if(TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) ||Session.currentUserInfo.getUser().getAddress().equals("")){
+            btnGoAddressSetting.setVisibility(View.VISIBLE);
+            btnSetRange.setVisibility(View.GONE);
+        }else{
+            btnSetRange.setVisibility(View.VISIBLE);
+            btnGoAddressSetting.setVisibility(View.GONE);
+        }
+
         setListFragmentData();
 
         //RecyclerView 끝에 왔을때 추가데이터 로딩
@@ -86,6 +98,11 @@ public class ListFragment extends Fragment {
             }
         });
         return v;
+    }
+
+    public void btnGoAddressSetting(View v){
+        Intent intent = new Intent(listContext, MyLocationSetting.class);
+        startActivity(intent);
     }
 
     public void btnRangeSetClicked(View v) {

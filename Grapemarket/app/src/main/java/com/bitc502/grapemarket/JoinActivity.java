@@ -105,6 +105,7 @@ public class JoinActivity extends AppCompatActivity {
                             showSelectedImageView.setVisibility(View.INVISIBLE);
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
+                            finish();
                         }else if(integer == -1){ // Connect2Server.java에서 에러
                             Log.d("myerror", "회원가입 실패");
                             Toast.makeText(joinContext,"서버와 통신 중 오류가 발생했습니다.",Toast.LENGTH_LONG).show();

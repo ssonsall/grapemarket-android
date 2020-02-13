@@ -10,16 +10,18 @@
 
     <include layout="@layout/my_toolbar" />
 
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/myprofile_proflie_photo"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
-        android:scaleType="centerCrop"
         android:clickable="true"
         android:onClick="btnChangeProfileImageClicked"
+        android:scaleType="centerCrop"
         android:src="@android:drawable/btn_dialog" />
 
     <View
@@ -80,11 +82,11 @@
             android:id="@+id/myprofile_email"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
+            android:enabled="false"
+            android:inputType="text"
             android:paddingLeft="30dp"
             android:textColor="@color/colorWhite"
-            android:textSize="30dp"
-            android:inputType="text"
-            android:enabled="false"/>
+            android:textSize="30dp" />
 
         <Button
             android:id="@+id/btn_myprofile_change_email"
@@ -92,10 +94,10 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_background"
             android:gravity="right|center_vertical"
+            android:onClick="btnChangeEmailClicked"
             android:text="수정"
             android:textColor="@color/colorWhite"
-            android:textSize="20dp"
-            android:onClick="btnChangeEmailClicked"/>
+            android:textSize="20dp" />
 
     </LinearLayout>
 
@@ -115,11 +117,11 @@
             android:id="@+id/myprofile_phone"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
+            android:enabled="false"
+            android:inputType="text"
             android:paddingLeft="30dp"
             android:textColor="@color/colorWhite"
-            android:textSize="30dp"
-            android:inputType="text"
-            android:enabled="false"/>
+            android:textSize="30dp" />
 
         <Button
             android:id="@+id/btn_myprofile_change_phone"
@@ -127,10 +129,10 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_background"
             android:gravity="right|center_vertical"
+            android:onClick="btnChangePhoneClicked"
             android:text="수정"
             android:textColor="@color/colorWhite"
-            android:textSize="20dp"
-            android:onClick="btnChangePhoneClicked"/>
+            android:textSize="20dp" />
     </LinearLayout>
 
     <TextView
@@ -173,8 +175,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/button_background"
-        android:text="비밀번호 변경"
         android:onClick="btnChangePassword"
+        android:text="비밀번호 변경"
         android:textColor="@color/colorWhite" />
 
     <Button
@@ -182,8 +184,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/button_background"
-        android:text="저장"
         android:onClick="btnChangeProfileCompleteClicked"
+        android:text="저장"
         android:textColor="@color/colorWhite" />
 
     <View

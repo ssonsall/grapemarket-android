@@ -62,7 +62,7 @@ public class TradeLogBuyAdapter extends RecyclerView.Adapter<TradeLogBuyHolder> 
         TradeLogBuy tradeLogBuy = tradeLogBuyList.get(position);
 
         holder.getTradeLogCurrentState().setText("상태 : " + tradeLogBuy.getState());
-        if(tradeLogBuy.getState().equals("구매완료")){
+        if(tradeLogBuy.getState().equals("구매완료") || tradeLogBuy.getState().equals("구매취소")){
             holder.getChangeTradeState().setClickable(false);
             holder.getChangeTradeState().setTextColor(context.getResources().getColor(R.color.colorGray));
         }

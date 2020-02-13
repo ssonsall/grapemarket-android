@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,15 +19,31 @@ import com.bitc502.grapemarket.singleton.Session;
 
 public class MySettingFragment extends Fragment {
     private Context mysettingContext;
-    private TextView rangeSet;
+    private TextView rangeSet,btnGoAddressSetting;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_my_setting, container, false);
         mysettingContext = getContext();
         rangeSet = getActivity().findViewById(R.id.toolbar_range_set);
+        btnGoAddressSetting = getActivity().findViewById(R.id.toolbar_go_address_setting);
         rangeSet.setVisibility(View.INVISIBLE);
+
+
+
+        if(TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) ||Session.currentUserInfo.getUser().getAddress().equals("")){
+            btnGoAddressSetting.setVisibility(View.VISIBLE);
+            rangeSet.setVisibility(View.GONE);
+        }else{
+            rangeSet.setVisibility(View.VISIBLE);
+            btnGoAddressSetting.setVisibility(View.GONE);
+        }
         return v;
+    }
+
+    public void btnGoAddressSetting(View v){
+        Intent intent = new Intent(mysettingContext, MyLocationSetting.class);
+        startActivity(intent);
     }
 
     //내 정보보기

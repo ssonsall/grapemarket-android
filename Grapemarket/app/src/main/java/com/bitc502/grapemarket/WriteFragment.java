@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,8 +30,10 @@ import android.widget.Toast;
 
 import com.bitc502.grapemarket.connect2server.Connect2Server;
 import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
+import com.bitc502.grapemarket.dialog.CustomGoAddressDialog;
 import com.bitc502.grapemarket.permission.PermissionsActivity;
 import com.bitc502.grapemarket.permission.PermissionsChecker;
+import com.bitc502.grapemarket.singleton.Session;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -48,7 +51,7 @@ public class WriteFragment extends Fragment {
     private Context writeContext;
     private Spinner write_category;
     private String category;
-    private TextView rangeSet;
+    private TextView rangeSet,btnGoAddressSetting;
     private ArrayAdapter spinnerAdpater;
     private FrameLayout frameLayoutImg1, frameLayoutImg2, frameLayoutImg3, frameLayoutImg4, frameLayoutImg5;
 
@@ -56,8 +59,45 @@ public class WriteFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_write, container, false);
-
         writeContext = getContext();
+
+
+
+        if(Session.currentUserInfo.getUser().getAddressAuth() != 1){
+            if(TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) ||Session.currentUserInfo.getUser().getAddress().equals("")) {
+                String message = "주소설정 후 인증이 필요합니다.";
+                CustomGoAddressDialog customGoAddressDialog = new CustomGoAddressDialog(writeContext, message, new CustomGoAddressDialog.CustomGoAddressDialogListener() {
+                    @Override
+                    public void clickConfirm() {
+                        Intent intent = new Intent(writeContext, MyLocationSetting.class);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void clickCancel() {
+
+                    }
+                });
+                customGoAddressDialog.show();
+
+            }else {
+                String message = "주소인증이 필요합니다.";
+                CustomGoAddressDialog customGoAddressDialog = new CustomGoAddressDialog(writeContext, message, new CustomGoAddressDialog.CustomGoAddressDialogListener() {
+                    @Override
+                    public void clickConfirm() {
+                        Intent intent = new Intent(writeContext, MyLocationAuthActivity.class);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void clickCancel() {
+
+                    }
+                });
+                customGoAddressDialog.show();
+            }
+
+        }
 
         checker = new PermissionsChecker(writeContext);
         permissionRead = false;
@@ -89,6 +129,8 @@ public class WriteFragment extends Fragment {
         selectedImage4.setVisibility(View.INVISIBLE);
         selectedImage5.setVisibility(View.INVISIBLE);
 
+        btnGoAddressSetting = getActivity().findViewById(R.id.toolbar_go_address_setting);
+
         imagePathList = new ArrayList<>();
 
         write_category = v.findViewById(R.id.write_category);
@@ -99,6 +141,14 @@ public class WriteFragment extends Fragment {
         spinnerAdpater = ArrayAdapter.createFromResource(getContext(), R.array.write_category, R.layout.spinner_dialog_layout);
         spinnerAdpater.setDropDownViewResource(R.layout.spinner_text_setting);
         write_category.setAdapter(spinnerAdpater);
+
+        if(TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) ||Session.currentUserInfo.getUser().getAddress().equals("")){
+            btnGoAddressSetting.setVisibility(View.VISIBLE);
+            rangeSet.setVisibility(View.GONE);
+        }else{
+            rangeSet.setVisibility(View.VISIBLE);
+            btnGoAddressSetting.setVisibility(View.GONE);
+        }
 
 
         write_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -115,6 +165,53 @@ public class WriteFragment extends Fragment {
         });
 
         return v;
+    }
+
+    public void btnGoAddressSetting(View v){
+        Intent intent = new Intent(writeContext, MyLocationSetting.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(Session.currentUserInfo.getUser().getAddressAuth() != 1){
+            if(TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) ||Session.currentUserInfo.getUser().getAddress().equals("")) {
+                String message = "주소설정 후 인증이 필요합니다.";
+                CustomGoAddressDialog customGoAddressDialog = new CustomGoAddressDialog(writeContext, message, new CustomGoAddressDialog.CustomGoAddressDialogListener() {
+                    @Override
+                    public void clickConfirm() {
+                        Intent intent = new Intent(writeContext, MyLocationSetting.class);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void clickCancel() {
+                        Intent intent = new Intent(writeContext, MotherActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                customGoAddressDialog.show();
+
+            }else {
+                String message = "주소인증이 필요합니다.";
+                CustomGoAddressDialog customGoAddressDialog = new CustomGoAddressDialog(writeContext, message, new CustomGoAddressDialog.CustomGoAddressDialogListener() {
+                    @Override
+                    public void clickConfirm() {
+                        Intent intent = new Intent(writeContext, MyLocationAuthActivity.class);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void clickCancel() {
+                        Intent intent = new Intent(writeContext, MotherActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                customGoAddressDialog.show();
+            }
+
+        }
     }
 
     //카테고리 옆 화살표 눌렀을때도 카테고리 스피너 뜨도록

@@ -71,7 +71,7 @@ public class ChattingSellListAdapter extends RecyclerView.Adapter<ChattingSellLi
                     //OKHTTP3
                     Request requestForImage = new Request.Builder()
                             .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                            .url("https://192.168.43.40:8443/upload/" + chat.getBoard().getImage1())
+                            .url(Connect2Server.getIpAddress()+"/upload/" + chat.getBoard().getImage1())
                             .get()
                             .build();
                     OkHttpClient clientForImage = Connect2Server.getUnsafeOkHttpClient();

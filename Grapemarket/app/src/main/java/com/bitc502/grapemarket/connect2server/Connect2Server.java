@@ -26,6 +26,8 @@ import com.bitc502.grapemarket.model.UserLocationSetting;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -51,11 +53,11 @@ import okhttp3.TlsVersion;
 
 
 public class Connect2Server {
-    private static final String IP_ADDRESS = "https://192.168.43.40:8443";
+    //private static final String IP_ADDRESS = "https://192.168.43.40:8443";
+    private static final String IP_ADDRESS = "https://ec2-15-164-214-135.ap-northeast-2.compute.amazonaws.com:8443";
     private static final String LOGIN = IP_ADDRESS + "/user/loginProc";
     private static final String LOGIN_USER_INFO = IP_ADDRESS + "/android/getUserInfo";
     private static final String JOIN = IP_ADDRESS + "/android/join";
-    private static final String All_LIST = IP_ADDRESS + "/android/allList";
     private static final String ALL_LIST_PAGEABLE = IP_ADDRESS + "/android/allListPageable";
     private static final String ALL_LIST_PAGEABLE_WITH_RANGE = IP_ADDRESS + "/android/allListPageableWithRange";
     private static final String DETAIL = IP_ADDRESS + "/android/detail/";
@@ -81,7 +83,7 @@ public class Connect2Server {
     private static final String TRADE_CANCEL = IP_ADDRESS + "/android/tradeCancel";
     private static final String OUT_CHATTING = IP_ADDRESS + "/android/outChat";
 
-    public static String getIpAddress(){
+    public static String getIpAddress() {
         return IP_ADDRESS;
     }
 
@@ -320,7 +322,7 @@ public class Connect2Server {
             String res = response.body().string();
             Log.d("myerror", "requestDetailBoard: >>>" + res);
             Board board = new Gson().fromJson(res, Board.class);
-
+            Log.d("myerror", "requestDetailBoard: userprofile>>> " + board.getUser().getUserProfile());
             BoardForDetail boardForDetail = new BoardForDetail();
             boardForDetail.setId(board.getId());
             boardForDetail.setAddressRange(board.getAddressRange());
@@ -350,7 +352,7 @@ public class Connect2Server {
                     //OKHTTP3
                     Request requestForImage = new Request.Builder()
                             .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                            .url("https://192.168.43.40:8443/upload/" + board.getUser().getUserProfile())
+                            .url(IP_ADDRESS + "/upload/" + board.getUser().getUserProfile())
                             .get()
                             .build();
                     OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -365,7 +367,7 @@ public class Connect2Server {
                         //OKHTTP3
                         Request requestForImage = new Request.Builder()
                                 .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                                .url("https://192.168.43.40:8443/upload/" + board.getImage1())
+                                .url(IP_ADDRESS+"/upload/" + board.getImage1())
                                 .get()
                                 .build();
                         OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -380,7 +382,7 @@ public class Connect2Server {
                         //OKHTTP3
                         Request requestForImage = new Request.Builder()
                                 .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                                .url("https://192.168.43.40:8443/upload/" + board.getImage2())
+                                .url(IP_ADDRESS+"/upload/" + board.getImage2())
                                 .get()
                                 .build();
                         OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -395,7 +397,7 @@ public class Connect2Server {
                         //OKHTTP3
                         Request requestForImage = new Request.Builder()
                                 .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                                .url("https://192.168.43.40:8443/upload/" + board.getImage3())
+                                .url(IP_ADDRESS+"/upload/" + board.getImage3())
                                 .get()
                                 .build();
                         OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -410,7 +412,7 @@ public class Connect2Server {
                         //OKHTTP3
                         Request requestForImage = new Request.Builder()
                                 .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                                .url("https://192.168.43.40:8443/upload/" + board.getImage4())
+                                .url(IP_ADDRESS+"/upload/" + board.getImage4())
                                 .get()
                                 .build();
                         OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -427,7 +429,7 @@ public class Connect2Server {
                         //OKHTTP3
                         Request requestForImage = new Request.Builder()
                                 .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                                .url("https://192.168.43.40:8443/upload/" + board.getImage5())
+                                .url(IP_ADDRESS+"/upload/" + board.getImage5())
                                 .get()
                                 .build();
                         OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -448,7 +450,7 @@ public class Connect2Server {
                 //OKHTTP3
                 Request requestForImage = new Request.Builder()
                         .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                        .url("https://192.168.43.40:8443/upload/" + board.getComment().get(i).getUser().getUserProfile())
+                        .url(IP_ADDRESS+"/upload/" + board.getComment().get(i).getUser().getUserProfile())
                         .get()
                         .build();
                 OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -468,6 +470,7 @@ public class Connect2Server {
                 commentForDetails.add(commentForDetail);
             }
             boardForDetail.setComment(commentForDetails);
+            Log.d("myerror", "detail return 직전 >> " + boardForDetail.getState());
             return boardForDetail;
         } catch (Exception e) {
             Log.d("myerror", e.toString());
@@ -480,9 +483,16 @@ public class Connect2Server {
     public static List<BoardForList> requestAllBoard(Integer pageNumber, Integer range) {
         //OKHTTP3
         try {
+            String connectAddress = "";
+            if(TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) ||Session.currentUserInfo.getUser().getAddress().equals("")){
+                connectAddress = ALL_LIST_PAGEABLE;
+            }else {
+                connectAddress = ALL_LIST_PAGEABLE_WITH_RANGE;
+            }
+
             Request request = new Request.Builder()
                     .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                    .url(ALL_LIST_PAGEABLE_WITH_RANGE + "?page=" + pageNumber.toString() + "&range=" + range.toString())
+                    .url(connectAddress + "?page=" + pageNumber.toString() + "&range=" + range.toString())
                     .get()
                     .build();
 
@@ -517,7 +527,7 @@ public class Connect2Server {
                     //OKHTTP3
                     Request requestForImage = new Request.Builder()
                             .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                            .url("https://192.168.43.40:8443/upload/" + boards.get(i).getImage1())
+                            .url(IP_ADDRESS+"/upload/" + boards.get(i).getImage1())
                             .get()
                             .build();
                     OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -545,7 +555,7 @@ public class Connect2Server {
         try {
             int category = 0;
             //카테고리 정보 숫자로 세팅
-            if(categoryString.equals("생활가전")){
+            if (categoryString.equals("생활가전")) {
                 category = 2;
             } else if (categoryString.equals("디지털")) {
                 category = 3;
@@ -879,7 +889,7 @@ public class Connect2Server {
                 //OKHTTP3
                 Request requestForImage = new Request.Builder()
                         .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                        .url("https://192.168.43.40:8443/upload/" + tradeStateForBuyerLists.get(i).getUser().getUserProfile())
+                        .url(IP_ADDRESS+"/upload/" + tradeStateForBuyerLists.get(i).getUser().getUserProfile())
                         .get()
                         .build();
                 OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -934,7 +944,7 @@ public class Connect2Server {
                 //OKHTTP3
                 Request requestForImage = new Request.Builder()
                         .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                        .url("https://192.168.43.40:8443/upload/" + tradeStateList.get(i).getBoard().getImage1())
+                        .url(IP_ADDRESS+"/upload/" + tradeStateList.get(i).getBoard().getImage1())
                         .get()
                         .build();
                 OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -961,7 +971,7 @@ public class Connect2Server {
 //                    //OKHTTP3
 //                    Request requestForImage = new Request.Builder()
 //                            .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-//                            .url("https://192.168.43.40:8443/upload/" + tradeStateList.get(i).getBoard().getImage1())
+//                            .url(IP_ADDRESS+"/upload/" + tradeStateList.get(i).getBoard().getImage1())
 //                            .get()
 //                            .build();
 //                    OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -982,7 +992,7 @@ public class Connect2Server {
 //                    //OKHTTP3
 //                    Request requestForImage = new Request.Builder()
 //                            .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-//                            .url("https://192.168.43.40:8443/upload/" + tradeStateList.get(i).getBoard().getImage1())
+//                            .url(IP_ADDRESS+"/upload/" + tradeStateList.get(i).getBoard().getImage1())
 //                            .get()
 //                            .build();
 //                    OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -1161,7 +1171,7 @@ public class Connect2Server {
                     //OKHTTP3
                     Request requestForImage = new Request.Builder()
                             .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                            .url("https://192.168.43.40:8443/upload/" + boards.get(i).getImage1())
+                            .url(IP_ADDRESS+"/upload/" + boards.get(i).getImage1())
                             .get()
                             .build();
                     OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -1223,7 +1233,7 @@ public class Connect2Server {
                 //OKHTTP3
                 Request requestForImage = new Request.Builder()
                         .addHeader("Cookie", Session.currentUserInfo.getJSessionId())
-                        .url("https://192.168.43.40:8443/upload/" + user.getUserProfile())
+                        .url(IP_ADDRESS+"/upload/" + user.getUserProfile())
                         .get()
                         .build();
                 OkHttpClient clientForImage = getUnsafeOkHttpClient();
@@ -1281,9 +1291,9 @@ public class Connect2Server {
 
             String fileName1 = "";
             sourceFile1 = new File(user.getUserProfile());
-            if(sourceFile1.exists()) {
+            if (sourceFile1.exists()) {
                 fileName1 = user.getUserProfile().substring(user.getUserProfile().lastIndexOf("/") + 1);
-            }else{
+            } else {
                 user.setUserProfile(currentUserProfile);
                 sourceFile1 = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "userprofile.podo");
                 sourceFile1.createNewFile();
@@ -1307,7 +1317,7 @@ public class Connect2Server {
             Response response = client.newCall(request).execute();
             String res = response.body().string();
 
-            if(dummyCreated) {
+            if (dummyCreated) {
                 sourceFile1.delete();
             }
 
