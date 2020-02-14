@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.bitc502.grapemarket.connect2server.Connect2Server;
 import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.dialog.CustomGoAddressDialog;
+import com.bitc502.grapemarket.model.NullCheckState;
 import com.bitc502.grapemarket.permission.PermissionsActivity;
 import com.bitc502.grapemarket.permission.PermissionsChecker;
 import com.bitc502.grapemarket.singleton.Session;
@@ -51,9 +52,10 @@ public class WriteFragment extends Fragment {
     private Context writeContext;
     private Spinner write_category;
     private String category;
-    private TextView rangeSet,btnGoAddressSetting;
+    private TextView rangeSet, btnGoAddressSetting;
     private ArrayAdapter spinnerAdpater;
     private FrameLayout frameLayoutImg1, frameLayoutImg2, frameLayoutImg3, frameLayoutImg4, frameLayoutImg5;
+    private NullCheckState nullCheckState;
 
     @Nullable
     @Override
@@ -61,10 +63,11 @@ public class WriteFragment extends Fragment {
         View v = inflater.inflate(R.layout.activity_write, container, false);
         writeContext = getContext();
 
+        nullCheckState = new NullCheckState();
 
 
-        if(Session.currentUserInfo.getUser().getAddressAuth() != 1){
-            if(TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) ||Session.currentUserInfo.getUser().getAddress().equals("")) {
+        if (Session.currentUserInfo.getUser().getAddressAuth() != 1) {
+            if (TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) || Session.currentUserInfo.getUser().getAddress().equals("")) {
                 String message = "주소설정 후 인증이 필요합니다.";
                 CustomGoAddressDialog customGoAddressDialog = new CustomGoAddressDialog(writeContext, message, new CustomGoAddressDialog.CustomGoAddressDialogListener() {
                     @Override
@@ -80,7 +83,7 @@ public class WriteFragment extends Fragment {
                 });
                 customGoAddressDialog.show();
 
-            }else {
+            } else {
                 String message = "주소인증이 필요합니다.";
                 CustomGoAddressDialog customGoAddressDialog = new CustomGoAddressDialog(writeContext, message, new CustomGoAddressDialog.CustomGoAddressDialogListener() {
                     @Override
@@ -142,10 +145,10 @@ public class WriteFragment extends Fragment {
         spinnerAdpater.setDropDownViewResource(R.layout.spinner_text_setting);
         write_category.setAdapter(spinnerAdpater);
 
-        if(TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) ||Session.currentUserInfo.getUser().getAddress().equals("")){
+        if (TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) || Session.currentUserInfo.getUser().getAddress().equals("")) {
             btnGoAddressSetting.setVisibility(View.VISIBLE);
             rangeSet.setVisibility(View.GONE);
-        }else{
+        } else {
             rangeSet.setVisibility(View.VISIBLE);
             btnGoAddressSetting.setVisibility(View.GONE);
         }
@@ -167,7 +170,7 @@ public class WriteFragment extends Fragment {
         return v;
     }
 
-    public void btnGoAddressSetting(View v){
+    public void btnGoAddressSetting(View v) {
         Intent intent = new Intent(writeContext, MyLocationSetting.class);
         startActivity(intent);
     }
@@ -175,8 +178,8 @@ public class WriteFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(Session.currentUserInfo.getUser().getAddressAuth() != 1){
-            if(TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) ||Session.currentUserInfo.getUser().getAddress().equals("")) {
+        if (Session.currentUserInfo.getUser().getAddressAuth() != 1) {
+            if (TextUtils.isEmpty(Session.currentUserInfo.getUser().getAddress()) || Session.currentUserInfo.getUser().getAddress().equals("")) {
                 String message = "주소설정 후 인증이 필요합니다.";
                 CustomGoAddressDialog customGoAddressDialog = new CustomGoAddressDialog(writeContext, message, new CustomGoAddressDialog.CustomGoAddressDialogListener() {
                     @Override
@@ -193,7 +196,7 @@ public class WriteFragment extends Fragment {
                 });
                 customGoAddressDialog.show();
 
-            }else {
+            } else {
                 String message = "주소인증이 필요합니다.";
                 CustomGoAddressDialog customGoAddressDialog = new CustomGoAddressDialog(writeContext, message, new CustomGoAddressDialog.CustomGoAddressDialogListener() {
                     @Override
@@ -365,7 +368,7 @@ public class WriteFragment extends Fragment {
                     Log.d("myerror", "imagePathListSize >> " + imagePathList.size());
                     int imagePathListSize = imagePathList.size();
                     for (int i = 0; i < imagePathListSize; i++) {
-                        if(imagePathListSize > 0 ) {
+                        if (imagePathListSize > 0) {
                             if (selectedImage1.getVisibility() != View.VISIBLE) {
                                 //image1에
                                 Picasso.with(writeContext).load(new File(imagePathList.get(0))).into(selectedImage1);
@@ -373,7 +376,7 @@ public class WriteFragment extends Fragment {
                                 frameLayoutImg1.setVisibility(View.VISIBLE);
                             }
                         }
-                        if(imagePathListSize > 1 ) {
+                        if (imagePathListSize > 1) {
                             if (selectedImage2.getVisibility() != View.VISIBLE) {
                                 //image2에
                                 Picasso.with(writeContext).load(new File(imagePathList.get(1))).into(selectedImage2);
@@ -381,7 +384,7 @@ public class WriteFragment extends Fragment {
                                 frameLayoutImg2.setVisibility(View.VISIBLE);
                             }
                         }
-                        if(imagePathListSize > 2 ) {
+                        if (imagePathListSize > 2) {
                             if (selectedImage3.getVisibility() != View.VISIBLE) {
                                 //image3에
                                 Picasso.with(writeContext).load(new File(imagePathList.get(2))).into(selectedImage3);
@@ -389,7 +392,7 @@ public class WriteFragment extends Fragment {
                                 frameLayoutImg3.setVisibility(View.VISIBLE);
                             }
                         }
-                        if(imagePathListSize > 3 ) {
+                        if (imagePathListSize > 3) {
                             if (selectedImage4.getVisibility() != View.VISIBLE) {
                                 //image4에
                                 Picasso.with(writeContext).load(new File(imagePathList.get(3))).into(selectedImage4);
@@ -397,7 +400,7 @@ public class WriteFragment extends Fragment {
                                 frameLayoutImg4.setVisibility(View.VISIBLE);
                             }
                         }
-                        if(imagePathListSize > 4 ) {
+                        if (imagePathListSize > 4) {
                             if (selectedImage5.getVisibility() != View.VISIBLE) {
                                 //image5에
                                 Picasso.with(writeContext).load(new File(imagePathList.get(4))).into(selectedImage5);
@@ -428,6 +431,10 @@ public class WriteFragment extends Fragment {
 
             @Override
             protected Integer doInBackground(Void... voids) {
+                checkNullBlank();
+                if (!nullCheckState.getIsValidate()) {
+                    return -3;
+                }
                 return Connect2Server.sendWriteInfoToServer(imagePathList, category, write_title.getText().toString(), write_price.getText().toString(), write_content.getText().toString());
             }
 
@@ -446,6 +453,8 @@ public class WriteFragment extends Fragment {
                     //왜냐면 리스트 프래그먼트가 첫 화면이기 때문
                     Intent intent = new Intent(writeContext, MotherActivity.class);
                     startActivity(intent);
+                } else if (result == -3) {
+                    Toast.makeText(writeContext,nullCheckState.getMessage(),Toast.LENGTH_LONG).show();
                 } else {
                     Log.d("mywrite", "글쓰기 실패");
                     Toast.makeText(writeContext, "글쓰기에 실패했습니다", Toast.LENGTH_LONG).show();
@@ -456,5 +465,25 @@ public class WriteFragment extends Fragment {
 
     private void startPermissionsActivity(String[] permission) {
         PermissionsActivity.startActivityForResult(getActivity(), 0, permission);
+    }
+
+    private NullCheckState checkNullBlank() {
+
+        if (TextUtils.isEmpty(write_title.getText()) || write_title.getText().toString().equals("")) {
+            nullCheckState.setIsValidate(false);
+            nullCheckState.setMessage("제목을 입력하세요.");
+            return nullCheckState;
+        } else if (TextUtils.isEmpty(write_content.getText()) || write_content.getText().toString().equals("")) {
+            nullCheckState.setIsValidate(false);
+            nullCheckState.setMessage("내용을 입력하세요.");
+            return nullCheckState;
+        } else if (TextUtils.isEmpty(write_price.getText()) || write_price.getText().toString().equals("")) {
+            nullCheckState.setIsValidate(false);
+            nullCheckState.setMessage("가격을 입력하세요.");
+            return nullCheckState;
+        }
+        nullCheckState.setIsValidate(true);
+        nullCheckState.setMessage("ok");
+        return nullCheckState;
     }
 }

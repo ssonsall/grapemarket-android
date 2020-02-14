@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.bitc502.grapemarket.connect2server.Connect2Server;
 import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.model.CurrentUserInfoForProfile;
+import com.bitc502.grapemarket.model.NullCheckState;
 import com.bitc502.grapemarket.model.User;
 import com.bitc502.grapemarket.permission.PermissionsActivity;
 import com.bitc502.grapemarket.permission.PermissionsChecker;
@@ -40,7 +42,7 @@ public class MyProfileActivity extends AppCompatActivity {
     private Button btnChangeEmail, btnChangePhone;
     private User user;
     private String currentUserProfile;
-
+    private NullCheckState nullCheckState;
     PermissionsChecker checker;
     private final String[] PERMISSIONS_READ_STORAGE = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
     private String imagePath;
@@ -51,6 +53,7 @@ public class MyProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_myprofile);
         user = new User();
         myProfileContext = getApplicationContext();
+        nullCheckState = new NullCheckState();
         checker = new PermissionsChecker(myProfileContext);
         btnChangeEmail = findViewById(R.id.btn_myprofile_change_email);
         btnChangePhone = findViewById(R.id.btn_myprofile_change_phone);
@@ -162,7 +165,7 @@ public class MyProfileActivity extends AppCompatActivity {
 
     //프로필 수정완료
     public void btnChangeProfileCompleteClicked(View v) {
-        new AsyncTask<Void, Boolean, Boolean>() {
+        new AsyncTask<Void, Boolean, Integer>() {
             CustomAnimationDialog podoLoading = new CustomAnimationDialog(MyProfileActivity.this);
 
             @Override
@@ -172,7 +175,11 @@ public class MyProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            protected Boolean doInBackground(Void... voids) {
+            protected Integer doInBackground(Void... voids) {
+                checkNullBlank();
+                if(!nullCheckState.getIsValidate()){
+                    return -3;
+                }
                 return Connect2Server.updateProfile(user, currentUserProfile);
             }
 
@@ -182,12 +189,15 @@ public class MyProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onPostExecute(Boolean result) {
+            protected void onPostExecute(Integer result) {
                 super.onPostExecute(result);
                 podoLoading.dismiss();
-                if(result){
+                if(result == 1){
                     Toast.makeText(myProfileContext,"프로필 업데이트 성공",Toast.LENGTH_LONG).show();
-                }else{
+                }else if(result == -3){
+                    Toast.makeText(myProfileContext,nullCheckState.getMessage(),Toast.LENGTH_LONG).show();
+                }
+                else{
                     Toast.makeText(myProfileContext,"프로필 업데이트 실패",Toast.LENGTH_LONG).show();
                 }
             }
@@ -240,5 +250,21 @@ public class MyProfileActivity extends AppCompatActivity {
             }
 
         }.execute();
+    }
+
+
+    private NullCheckState checkNullBlank() {
+        if (TextUtils.isEmpty(currentEmail.getText()) || currentEmail.getText().toString().equals("")) {
+            nullCheckState.setIsValidate(false);
+            nullCheckState.setMessage("이메일을 입력하세요.");
+            return nullCheckState;
+        } else if (TextUtils.isEmpty(currentPhone.getText()) || currentPhone.getText().toString().equals("")) {
+            nullCheckState.setIsValidate(false);
+            nullCheckState.setMessage("전화번호를 입력하세요.");
+            return nullCheckState;
+        }
+        nullCheckState.setIsValidate(true);
+        nullCheckState.setMessage("ok");
+        return nullCheckState;
     }
 }

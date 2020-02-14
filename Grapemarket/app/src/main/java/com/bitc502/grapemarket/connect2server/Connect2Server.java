@@ -1253,7 +1253,7 @@ public class Connect2Server {
         }
     }
 
-    public static Boolean changePassword(String newPassword) {
+    public static Integer changePassword(String newPassword) {
         try {
             //OKHTTP3
             RequestBody requestBody = new MultipartBody.Builder()
@@ -1271,18 +1271,18 @@ public class Connect2Server {
             Response response = client.newCall(request).execute();
             String res = response.body().string();
             if (res.equals("success")) {
-                return true;
+                return 1;
             } else {
-                return false;
+                return -1;
             }
         } catch (Exception e) {
             Log.d("myerror", e.toString());
-            return false;
+            return -1;
         }
     }
 
     //프로필 업데이트
-    public static Boolean updateProfile(User user, String currentUserProfile) {
+    public static Integer updateProfile(User user, String currentUserProfile) {
         try {
             Boolean dummyCreated = false;
             final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/*");
@@ -1322,18 +1322,18 @@ public class Connect2Server {
             }
 
             if (res.equals("success")) {
-                return true;
+                return 1;
             } else {
-                return false;
+                return -1;
             }
         } catch (Exception e) {
             Log.d("myerror", e.toString());
-            return false;
+            return -1;
         }
     }
 
     //게시글 수정
-    public static Boolean modifyBoard(Integer boardId, List<String> imagePathList, String categoryString, String title, String price, String content,
+    public static Integer modifyBoard(Integer boardId, List<String> imagePathList, String categoryString, String title, String price, String content,
                                       String currentImage1, String currentImage2, String currentImage3, String currentImage4, String currentImage5) {
         try {
             if (TextUtils.isEmpty(currentImage1)) {
@@ -1578,13 +1578,13 @@ public class Connect2Server {
 
 
             if (res.equals("success")) {
-                return true;
+                return 1;
             } else {
-                return false;
+                return -1;
             }
         } catch (Exception e) {
             Log.d("modifyt", e.toString());
-            return false;
+            return -1;
         }
     }
 

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bitc502.grapemarket.connect2server.Connect2Server;
 import com.bitc502.grapemarket.dialog.CustomAnimationDialog;
 import com.bitc502.grapemarket.model.BoardForDetail;
+import com.bitc502.grapemarket.model.NullCheckState;
 import com.bitc502.grapemarket.permission.PermissionsActivity;
 import com.bitc502.grapemarket.permission.PermissionsChecker;
 import com.squareup.picasso.Picasso;
@@ -49,6 +51,7 @@ public class BoardModifyActivity extends AppCompatActivity {
     private Integer boardId;
     private BoardForDetail boardForDetail;
     private FrameLayout frameLayoutImg1, frameLayoutImg2, frameLayoutImg3, frameLayoutImg4, frameLayoutImg5;
+    private NullCheckState nullCheckState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,7 @@ public class BoardModifyActivity extends AppCompatActivity {
         checker = new PermissionsChecker(boardModifyContext);
         permissionRead = false;
         permissionWrite = false;
-
+        nullCheckState = new NullCheckState();
         boardId = getIntent().getExtras().getInt("boardId");
 
 
@@ -476,7 +479,7 @@ public class BoardModifyActivity extends AppCompatActivity {
     }
 
     public void btnWriteComplete(View v) {
-        new AsyncTask<Void, Integer, Boolean>() {
+        new AsyncTask<Void, Integer, Integer>() {
             CustomAnimationDialog podoLoading = new CustomAnimationDialog(BoardModifyActivity.this);
 
             @Override
@@ -486,7 +489,12 @@ public class BoardModifyActivity extends AppCompatActivity {
             }
 
             @Override
-            protected Boolean doInBackground(Void... voids) {
+            protected Integer doInBackground(Void... voids) {
+                checkNullBlank();
+                if (!nullCheckState.getIsValidate()) {
+                    return -3;
+                }
+
                 return Connect2Server.modifyBoard(boardId, imagePathList, category, write_title.getText().toString(), write_price.getText().toString(), write_content.getText().toString()
                         , boardForDetail.getCurrentImage1(), boardForDetail.getCurrentImage2(), boardForDetail.getCurrentImage3(), boardForDetail.getCurrentImage4(), boardForDetail.getCurrentImage5());
             }
@@ -497,13 +505,15 @@ public class BoardModifyActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onPostExecute(Boolean result) {
+            protected void onPostExecute(Integer result) {
                 super.onPostExecute(result);
                 podoLoading.dismiss();
-                if (result) {
+                if (result == 1) {
                     Log.d("mywrite", "글쓰기 성공");
                     Intent intent = new Intent(boardModifyContext, MotherActivity.class);
                     startActivity(intent);
+                } else if (result == -3) {
+                    Toast.makeText(boardModifyContext,nullCheckState.getMessage(),Toast.LENGTH_LONG).show();
                 } else {
                     Log.d("mywrite", "글쓰기 실패");
                     Toast.makeText(boardModifyContext, "글쓰기에 실패했습니다", Toast.LENGTH_LONG).show();
@@ -514,5 +524,25 @@ public class BoardModifyActivity extends AppCompatActivity {
 
     private void startPermissionsActivity(String[] permission) {
         PermissionsActivity.startActivityForResult(this, 0, permission);
+    }
+
+    private NullCheckState checkNullBlank() {
+
+        if (TextUtils.isEmpty(write_title.getText()) || write_title.getText().toString().equals("")) {
+            nullCheckState.setIsValidate(false);
+            nullCheckState.setMessage("제목을 입력하세요.");
+            return nullCheckState;
+        } else if (TextUtils.isEmpty(write_content.getText()) || write_content.getText().toString().equals("")) {
+            nullCheckState.setIsValidate(false);
+            nullCheckState.setMessage("내용을 입력하세요.");
+            return nullCheckState;
+        } else if (TextUtils.isEmpty(write_price.getText()) || write_price.getText().toString().equals("")) {
+            nullCheckState.setIsValidate(false);
+            nullCheckState.setMessage("가격을 입력하세요.");
+            return nullCheckState;
+        }
+        nullCheckState.setIsValidate(true);
+        nullCheckState.setMessage("ok");
+        return nullCheckState;
     }
 }
